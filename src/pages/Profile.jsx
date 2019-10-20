@@ -16,7 +16,7 @@ const Profile = () => {
     const options = Object.keys(userData).filter(key => {
         return userData[key] !== null;
     });
-    
+
     return (
         <div className="page">
             <p className="page-title" style={{ textAlign: "center" }}>
@@ -30,7 +30,6 @@ const Profile = () => {
                     selected={selected}
                 />
             </Col>
-
             <Col className="col-8">
                 <Terminal
                     userData={userData}
