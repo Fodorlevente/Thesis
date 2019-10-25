@@ -5,6 +5,8 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const keys = require("../config");
 const chalk = require("chalk");
 const connections = require('../db/connections');
+const bodyParser = require('body-parser');
+
 let user = {};
 
 passport.serializeUser((user, cb) => {
@@ -44,6 +46,8 @@ passport.use(new GoogleStrategy({
 const app = express();
 app.use(cors());
 app.use(passport.initialize());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/auth/google", passport.authenticate("google", {
     scope: ["profile", "email"]
@@ -64,6 +68,13 @@ app.get("/auth/logout", (req, res) => {
     user = {};
     res.redirect("/");
 });
+
+app.post('/api/team',function(req,res){
+    var newTeamName=req.body.name;
+    console.log(chalk.yellow("New Team name: = " + newTeamName));
+    res.end("yes");
+});
+
 
 const PORT = 5000;
 app.listen(PORT);
