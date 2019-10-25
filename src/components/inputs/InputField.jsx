@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import CreateTeamButton from '../buttons/CreateTeamButton';
 import Button from '@material-ui/core/Button';
+import SimpleSnackbar from '../displays/SnackBar';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -22,8 +22,8 @@ export default function CreateTeamInputField() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     name: '',
-    age: '',
     multiline: 'Controlled',
+    showMessage: false,
   });
 
   const handleChange = name => event => {
@@ -40,9 +40,13 @@ export default function CreateTeamInputField() {
       body: JSON.stringify({
         name: values.name,
       }),
+    }).then((response) => {
+      if(response.status == 200){
+        setValues({...values, showMessage: true});
+      }
     });
   }
-
+  
   return (
     <form className={classes.container} key="createTeamForm" noValidate autoComplete="off">
       <TextField
@@ -66,6 +70,7 @@ export default function CreateTeamInputField() {
       >
         Create a new team
       </Button>
+      {values.showMessage == true ? <SimpleSnackbar msg="New team registered successfully" /> : ""}
     </form>
   );
 }
