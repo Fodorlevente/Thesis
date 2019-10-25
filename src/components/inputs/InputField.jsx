@@ -48,6 +48,8 @@ export default function CreateTeamInputField() {
       <TextField
         id="outlined-name"
         label="Team Name"
+        helperText = "Name of your team"
+        required
         className={classes.textField}
         value={values.name}
         onChange={handleChange('name')}
@@ -58,6 +60,7 @@ export default function CreateTeamInputField() {
         variant="contained"
         color="primary"
         size="large"
+        disabled={!values.name}
         className={classes.button}
         onClick={() => registerTeam()}
       >

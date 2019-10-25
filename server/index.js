@@ -72,8 +72,25 @@ app.get("/auth/logout", (req, res) => {
 app.post('/api/team',function(req,res){
     var newTeamName=req.body.name;
     console.log(chalk.yellow("New Team name: = " + newTeamName));
+    createNewTeam(newTeamName);
     res.end("yes");
 });
+
+function createNewTeam(teamName){
+    connections.Team.findOrCreate({ where: { 
+        name: teamName
+    }
+    // , defaults: {
+    //     name: profile.displayName,
+    //     profilePicture: profile.photos[0].value,
+    // }
+ }).then(([registeredTeam, created]) => {
+        console.log(registeredTeam.get({
+            plain: true
+          }))
+        team = registeredTeam.get({ plain: true });
+    });
+}
 
 
 const PORT = 5000;
