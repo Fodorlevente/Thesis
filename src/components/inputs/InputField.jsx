@@ -41,7 +41,7 @@ export default function CreateTeamInputField() {
         name: values.name,
       }),
     }).then((response) => {
-      if(response.status == 200){
+      if(response.status === 200){
         setValues({...values, showMessage: true});
       }
     });
@@ -70,7 +70,7 @@ export default function CreateTeamInputField() {
       >
         Create a new team
       </Button>
-      {values.showMessage == true ? <SimpleSnackbar msg="New team registered successfully" /> : ""}
+      {values.showMessage === true ? <SimpleSnackbar msg="New team registered successfully" /> : ""}
     </form>
   );
 }

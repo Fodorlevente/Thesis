@@ -32,8 +32,6 @@ passport.use(new GoogleStrategy({
             name: profile.displayName,
             profilePicture: profile.photos[0].value,
         } }).then(([registeredUser, created]) => {
-            // console.log(chalk.yellow("New User registered data:", user.id, user.displayName, user.emails[0].value, user.photos[0].value));
-            // console.log(created);
             console.log(registeredUser.get({
                 plain: true
               }))
@@ -80,10 +78,6 @@ function createNewTeam(teamName){
     connections.Team.findOrCreate({ where: { 
         name: teamName
     }
-    // , defaults: {
-    //     name: profile.displayName,
-    //     profilePicture: profile.photos[0].value,
-    // }
  }).then(([registeredTeam, created]) => {
         console.log(registeredTeam.get({
             plain: true
