@@ -8,6 +8,12 @@ const connections = require('../db/connections');
 const bodyParser = require('body-parser');
 
 let user = {};
+let allTeams = {};
+
+connections.Team.findAll().then(teams => {
+    console.log(chalk.green("All teams:", JSON.stringify(teams, null, 4)));
+    allTeams = JSON.stringify(teams, null, 4)
+}); 
 
 passport.serializeUser((user, cb) => {
     cb(null, user);
@@ -74,6 +80,13 @@ app.post('/api/team',function(req,res){
     res.end("yes");
 });
 
+
+
+app.get("/team", (req, res) => {
+    console.log(chalk.green("getting teams!"));
+    res.send(allTeams);
+});
+
 function createNewTeam(teamName){
     connections.Team.findOrCreate({ where: { 
         name: teamName
@@ -85,6 +98,9 @@ function createNewTeam(teamName){
         team = registeredTeam.get({ plain: true });
     });
 }
+
+
+
 
 
 const PORT = 5000;
