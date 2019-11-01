@@ -14,6 +14,7 @@ const useStyles = makeStyles({
   root: {
     width: '100%',
     overflowX: 'auto',
+    marginBottom: 25,
   },
   button: {
     margin: 2,
@@ -31,7 +32,7 @@ function generateTableContent(content, memberOfTeam){
           {generateActionButton(memberOfTeam, content[key].name)}
         </TableCell>
         <TableCell align="right">
-          {generateDeleteButton()}
+          {generateDeleteButton(content[key].name)}
         </TableCell>
       </TableRow>
     ))
@@ -47,20 +48,35 @@ function generateActionButton(memberOfTeam, actualTeamName){
         className={useStyles.button}
         // onClick={() => registerTeam()}
       >
-        {memberOfTeam === actualTeamName ? "Log out" : "Log in" }
+        {memberOfTeam === actualTeamName ? "Leave" : "Join" }
       </Button>
   )
 }
 
-function generateDeleteButton(){
+function generateDeleteButton(teamName){
   return (
-    <IconButton  className={useStyles.button} aria-label="delete">
+    <IconButton  className={useStyles.button} aria-label="delete" onClick={() => deleteTeam(teamName) } >
       <DeleteIcon />
     </IconButton>
   )
 }
 
-
+function deleteTeam(teamName) {
+  fetch('/api/deleteteam', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: teamName,
+    }),
+  }).then((response) => {
+    if(response.status === 200){
+      console.log(`${teamName} deleted`);
+    }
+  });
+}
 
 export default function TeamTable(props) {
   const classes = useStyles();

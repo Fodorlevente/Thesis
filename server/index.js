@@ -80,6 +80,12 @@ app.post('/api/team',function(req,res){
     res.end("yes");
 });
 
+app.post('/api/deleteteam',function(req,res){
+    var teamNameToDelete=req.body.name;
+    deleteTeam(teamNameToDelete);
+    res.end("yes");
+});
+
 
 
 app.get("/team", (req, res) => {
@@ -99,6 +105,15 @@ function createNewTeam(teamName){
     });
 }
 
+function deleteTeam(teamName){
+    connections.Team.destroy({
+        where: {
+            name: teamName
+        }
+      }).then(() => {
+        console.log(chalk.green("Team deleted"));
+      });
+}
 
 
 
