@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function CreateTeamInputField() {
+export default function CreateTeamInputField(props) {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     name: '',
@@ -43,6 +43,7 @@ export default function CreateTeamInputField() {
     }).then((response) => {
       if(response.status === 200){
         setValues({...values, showMessage: true});
+        props.addTeam(values.name);
       }
     });
   }
