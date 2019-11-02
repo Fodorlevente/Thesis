@@ -21,10 +21,10 @@ const useStyles = makeStyles({
   },
 });
 
-function generateTableContent(content, memberOfTeam){
+function generateTableContent(content, memberOfTeam, removeTeam){
   return (
     Object.keys(content).map((key) => (
-      <TableRow key={content[key].id}>
+      <TableRow key={content[key].name}>
         <TableCell component="th" scope="row">
           {content[key].name}
         </TableCell>
@@ -32,7 +32,7 @@ function generateTableContent(content, memberOfTeam){
           {generateActionButton(memberOfTeam, content[key].name)}
         </TableCell>
         <TableCell align="right">
-          {generateDeleteButton(content[key].name)}
+          {generateDeleteButton(content[key].name, removeTeam)}
         </TableCell>
       </TableRow>
     ))
@@ -53,15 +53,15 @@ function generateActionButton(memberOfTeam, actualTeamName){
   )
 }
 
-function generateDeleteButton(teamName){
+function generateDeleteButton(teamName, removeTeam){
   return (
-    <IconButton  className={useStyles.button} aria-label="delete" onClick={() => deleteTeam(teamName) } >
+    <IconButton  className={useStyles.button} aria-label="delete" onClick={() => deleteTeam(teamName, removeTeam) } >
       <DeleteIcon />
     </IconButton>
   )
 }
 
-function deleteTeam(teamName) {
+function deleteTeam(teamName, removeTeam) {
   fetch('/api/deleteteam', {
     method: 'POST',
     headers: {
@@ -73,6 +73,7 @@ function deleteTeam(teamName) {
     }),
   }).then((response) => {
     if(response.status === 200){
+      removeTeam(teamName);
       console.log(`${teamName} deleted`);
     }
   });
@@ -92,7 +93,7 @@ export default function TeamTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-        {props.teams !== {} ? generateTableContent(props.teams, props.memberOfTeam) : "" }
+        {props.teams !== {} ? generateTableContent(props.teams, props.memberOfTeam, props.removeTeam) : "" }
         </TableBody>
       </Table>  
     </Paper>

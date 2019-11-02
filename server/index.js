@@ -10,11 +10,6 @@ const bodyParser = require('body-parser');
 let user = {};
 let allTeams = {};
 
-connections.Team.findAll().then(teams => {
-    console.log(chalk.green("All teams:", JSON.stringify(teams, null, 4)));
-    allTeams = JSON.stringify(teams, null, 4)
-}); 
-
 passport.serializeUser((user, cb) => {
     cb(null, user);
 });
@@ -86,9 +81,16 @@ app.post('/api/deleteteam',function(req,res){
     res.end("yes");
 });
 
-
+function synchronizeTeams(){
+    connections.Team.findAll().then(teams => {
+        console.log(chalk.green("All teams:", JSON.stringify(teams, null, 4)));
+        allTeams = JSON.stringify(teams, null, 4)
+        console.log(chalk.green("Teams table synchronazition done!"));
+    }); 
+}
 
 app.get("/team", (req, res) => {
+    synchronizeTeams();
     console.log(chalk.green("getting teams!"));
     res.send(allTeams);
 });
