@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
 });
 
-function generateTableContent(content, memberOfTeam, removeTeam){
+function generateTableContent(content, memberOfTeam, removeTeam, userName){
   return (
     Object.keys(content).map((key) => (
       <TableRow key={content[key].name}>
@@ -29,7 +29,7 @@ function generateTableContent(content, memberOfTeam, removeTeam){
           {content[key].name}
         </TableCell>
         <TableCell align="right">
-          {generateActionButton(memberOfTeam, content[key].name)}
+          {generateActionButton(memberOfTeam, content[key].name, userName)}
         </TableCell>
         <TableCell align="right">
           {generateDeleteButton(content[key].name, removeTeam)}
@@ -39,14 +39,14 @@ function generateTableContent(content, memberOfTeam, removeTeam){
   );
 }
 
-function generateActionButton(memberOfTeam, actualTeamName){
+function generateActionButton(memberOfTeam, actualTeamName, userName){
   return (
       <Button
         variant="contained"
         color={memberOfTeam === actualTeamName ? "primary" : "secondary" }
         size="large"
         className={useStyles.button}
-        // onClick={() => registerTeam()}
+        onClick={() => joinTeam(actualTeamName, userName) }
       >
         {memberOfTeam === actualTeamName ? "Leave" : "Join" }
       </Button>
@@ -79,6 +79,25 @@ function deleteTeam(teamName, removeTeam) {
   });
 }
 
+function joinTeam(teamName, userName) {
+  fetch('/api/jointeam', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: userName,
+      team: teamName,
+    }),
+  }).then((response) => {
+    if(response.status === 200){
+      // removeTeam(teamName);
+      console.log(`${userName} joined ${teamName} `);
+    }
+  });
+}
+
 export default function TeamTable(props) {
   const classes = useStyles();
 
@@ -93,7 +112,7 @@ export default function TeamTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-        {props.teams !== {} ? generateTableContent(props.teams, props.memberOfTeam, props.removeTeam) : "" }
+        {props.teams !== {} ? generateTableContent(props.teams, props.memberOfTeam, props.removeTeam, props.userName) : "" }
         </TableBody>
       </Table>  
     </Paper>

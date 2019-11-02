@@ -95,6 +95,13 @@ app.get("/team", (req, res) => {
     res.send(allTeams);
 });
 
+app.post('/api/jointeam',function(req,res){
+    var teamToJoin=req.body.team;
+    var user = req.body.name;
+    joinToTeam(teamToJoin,user);
+    res.end("yes");
+});
+
 function createNewTeam(teamName){
     connections.Team.findOrCreate({ where: { 
         name: teamName
@@ -117,6 +124,15 @@ function deleteTeam(teamName){
       });
 }
 
+function joinToTeam(teamName, userName){
+    connections.User.update({ team: teamName }, {
+        where: {
+            name: userName
+        }
+      }).then(() => {
+        console.log(`${userName} joined ${teamName} successfully`);
+      });
+}
 
 
 

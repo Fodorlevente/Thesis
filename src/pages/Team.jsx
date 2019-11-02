@@ -41,11 +41,15 @@ export default function Team() {
        setTeams([...teams, {id: Math.floor(Math.random()*100) ,name: teamName}]);
       }
 
+      function joinToTeam(){
+
+      }
+
     return (
         <div className="page">
             <p className="page-title" style={{ textAlign: "center" }}>
                 Find or create Teams
-            </p> 
+            </p>
             <CreateTeamInputField addTeam={addTeam}/>
             {_.isEmpty(teams) ? 
                 <p className="page-title" style={{ textAlign: "center" }}>
@@ -53,8 +57,9 @@ export default function Team() {
                 </p> : 
                 <TeamTable 
                     teams={teams} 
-                    memberOfTeam={"DevOps"} 
+                    memberOfTeam={userData.team} 
                     removeTeam={removeTeam}
+                    userName={userData.name}
                 />}
         </div>
     );
