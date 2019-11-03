@@ -11,17 +11,6 @@ export default function Team() {
     const text = _.isEmpty(userData.teams) ? LoginMsg: "Explore Teams";
     const [teams, setTeams] = useState({});
 
-    function initializeTeams() {
-        fetch('/team')
-        .then(response => response.json())
-        .then(data => {
-            setTeams(data);
-        })
-        .catch(error => {
-            console.log(error)
-        })
-    }
-
     useEffect(() => {
         fetch('/team')
         .then(response => response.json())
@@ -39,10 +28,6 @@ export default function Team() {
 
       function addTeam(teamName){
        setTeams([...teams, {id: Math.floor(Math.random()*100) ,name: teamName}]);
-      }
-
-      function joinToTeam(){
-
       }
 
     return (

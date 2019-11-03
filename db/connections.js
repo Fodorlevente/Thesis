@@ -130,21 +130,21 @@ Message.init({
         modelName: keys.MODEL.message
     });
 
-class IdeaBox extends Model { }
-IdeaBox.init({
-    team: {
-        type: Sequelize.STRING,
-        allowNull: false
-    }
-}, {
-        sequelize,
-        modelName: keys.MODEL.ideabox
-    });
+// class IdeaBox extends Model { }
+// IdeaBox.init({
+//     team: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     }
+// }, {
+//         sequelize,
+//         modelName: keys.MODEL.ideabox
+//     });
 
 class Idea extends Model { }
 Idea.init({
-    ideaboxid: {
-        type: Sequelize.INTEGER,
+    team: {
+        type: Sequelize.STRING,
         allowNull: false
     },
     date: {
@@ -222,20 +222,12 @@ NicoNico.init({
 sequelize.sync();
 
 
-NicoNico.findOrCreate({ where: { user: "Jane", value: "5", date: new Date(Date.UTC(2019, 10, 10)) } }).then(jane => {
-    console.log("Jane's auto-generated ID:", jane.id);
-});
-
-NicoNico.findAll().then(menuitems => {
-    console.log(chalk.green("All NicoNico:", JSON.stringify(menuitems, null, 4)));
-});
-
 module.exports = {
     NicoNico,
     RetrospectiveFinding,
     Retrospective,
     Idea,
-    IdeaBox,
+    // IdeaBox,
     Message,
     MessageBoard,
     UserCompetency,

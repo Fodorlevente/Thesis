@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 
 let user = {};
 let allTeams = {};
+let allIdeas = {};
 
 passport.serializeUser((user, cb) => {
     cb(null, user);
@@ -134,7 +135,76 @@ function joinToTeam(teamName, userName){
       });
 }
 
+function synchronizeIdeas(){
+    connections.Idea.findAll().then(ideas => {
+        console.log(chalk.yellow("All Ideas:", JSON.stringify(ideas, null, 4)));
+        allIdeas = JSON.stringify(ideas, null, 4)
+        console.log(chalk.green("Ideas table synchronazition done!"));
+    }); 
+}
 
+app.get("/idea", (req, res) => {
+    synchronizeIdeas();
+    console.log(chalk.green("getting Ideas!"));
+    res.send(allIdeas);
+});
+
+app.post('/api/idea',function(req,res){
+    var newIdeaMessage=req.body.name;
+    var newIdeaDate=req.body.date;
+    var newIdeaTeam=req.body.team;
+    var newIdeaCompleted=req.body.completed;
+    createNewIdea(newIdeaMessage,newIdeaDate,newIdeaTeam,newIdeaCompleted);
+    res.end("yes");
+});
+
+app.post('/api/deleteidea',function(req,res){
+    var ideaNeedToDelete=req.body.name;
+    deleteIdea(ideaNeedToDelete);
+    res.end("yes");
+});
+
+app.post('/api/completeidea',function(req,res){
+    var ideaNeedToComplete=req.body.name;
+    console.log(chalk.blue(ideaNeedToComplete));
+    completeIdea(ideaNeedToComplete);
+    res.end("yes");
+});
+
+function completeIdea(ideaName){
+    connections.Idea.update({ completed: 1 }, {
+        where: {
+            message: ideaName
+        }
+      }).then(() => {
+        console.log(`${ideaName} set to Completed successfully`);
+      });
+}
+
+function createNewIdea(_message, _date, _team, _completed){
+    connections.Idea.findOrCreate({ where: { 
+        message: _message,
+        date: _date,
+        team: _team,
+        completed: _completed,
+    }
+ }).then(([registeredTeam, created]) => {
+        console.log(registeredTeam.get({
+            plain: true
+          }))
+        team = registeredTeam.get({ plain: true });
+    });
+}
+
+function deleteIdea(ideaName){
+    connections.Idea.destroy({
+        where: {
+            message: ideaName
+        }
+      }).then(() => {
+        console.log(chalk.green("Idea deleted"));
+      });
+}
 
 const PORT = 5000;
 app.listen(PORT);

@@ -5,6 +5,7 @@ import UserProvider from "./contexts/UserProvider";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Team from "./pages/Team";
+import IdeaBox from "./pages/IdeaBox";
 import MenuBar from "./components/menus/MenuBar";
 
 const App = () => {
@@ -18,7 +19,7 @@ const App = () => {
                 <Route path="/metrics" component={Profile} />
                 <Route path="/planning" component={Profile} />
                 <Route path="/retrospective" component={Profile} />
-                <Route path="/ideabox" component={Profile} />
+                <Route path="/ideabox" component={IdeaBox} />
                 <Route path="/settings" component={Profile} />
                 <Route path="/team" component={Team} />
             </UserProvider>
