@@ -247,5 +247,32 @@ function createNewMessage(_message, _user, _date,  _team){
     });
 }
 
+// ------- Profile / User ---------
+
+function synchronizeUser(){
+    connections.User.findAll().then(_user => {
+        user = JSON.stringify(_user, null, 4)
+        console.log(chalk.green("User table synchronazition done!"));
+    }); 
+}
+
+function updateProfileToScumMaster(userName, _rank){
+    connections.User.update({ rank: _rank}, {
+        where: {
+            name: userName
+        }
+      }).then(() => {
+        console.log(`${userName} set to  ${_rank} successfully`);
+      });
+}
+
+app.post('/api/setProfile',function(req,res){
+    let role=req.body.rank;
+    let user = req.body.user;
+    updateProfileToScumMaster(user,role);
+    res.end("yes");
+    synchronizeUser();
+});
+
 const PORT = 5000;
 app.listen(PORT);

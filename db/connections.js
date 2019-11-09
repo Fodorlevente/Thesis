@@ -177,31 +177,41 @@ Retrospective.init({
     team: {
         type: Sequelize.STRING,
         allowNull: false
+    },evaluation: { // good / bad // todo
+        type: Sequelize.ENUM,
+        allowNull: false,
+        values: ["Worked well", "To be improve", "Want to do in next sprint"]
+    },
+    description: {
+        type: Sequelize.STRING,
+        allowNull: false
+    }, roomName: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 }, {
         sequelize,
         modelName: keys.MODEL.retorspective
     });
 
-
-class RetrospectiveFinding extends Model { }
-RetrospectiveFinding.init({
-    retrospectiveid: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-    },
-    evaluation: { // good / bad // todo
-        type: Sequelize.DATE,
-        allowNull: false
-    },
-    description: {
-        type: Sequelize.STRING,
-        allowNull: false
-    }
-}, {
-        sequelize,
-        modelName: keys.MODEL.retorspectivefinding
-    });
+// class RetrospectiveFinding extends Model { }
+// RetrospectiveFinding.init({
+//     retrospectiveid: {
+//         type: Sequelize.INTEGER,
+//         allowNull: false
+//     },
+//     evaluation: { // good / bad // todo
+//         type: Sequelize.DATE,
+//         allowNull: false
+//     },
+//     description: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     }
+// }, {
+//         sequelize,
+//         modelName: keys.MODEL.retorspectivefinding
+//     });
 
 
 class NicoNico extends Model { }
@@ -229,7 +239,7 @@ sequelize.sync();
 
 module.exports = {
     NicoNico,
-    RetrospectiveFinding,
+    // RetrospectiveFinding,
     Retrospective,
     Idea,
     // IdeaBox,
