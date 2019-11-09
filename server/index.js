@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 let user = {};
 let allTeams = {};
 let allIdeas = {};
+let allMessages = {};
 
 passport.serializeUser((user, cb) => {
     cb(null, user);
@@ -204,6 +205,46 @@ function deleteIdea(ideaName){
       }).then(() => {
         console.log(chalk.green("Idea deleted"));
       });
+}
+
+// ------ Message Board ------------
+
+function synchronizeMessages(){
+    connections.Message.findAll().then(messages => {
+        console.log(chalk.yellow("All messages:", JSON.stringify(messages, null, 4)));
+        allMessages = JSON.stringify(messages, null, 4)
+        console.log(chalk.green("Messages table synchronazition done!"));
+    }); 
+}
+
+app.get("/messageBoard", (req, res) => {
+    synchronizeMessages();
+    console.log(chalk.green("getting Messages!"));
+    res.send(allMessages);
+});
+
+app.post('/api/sendMessage',function(req,res){
+    let message=req.body.message;
+    let user=req.body.user;
+    let date=req.body.date;
+    let team=req.body.team;
+    createNewMessage(message,user,date,team);
+    res.end("yes");
+});
+
+function createNewMessage(_message, _user, _date,  _team){
+    connections.Message.findOrCreate({ where: { 
+        message: _message,
+        date: _date,
+        team: _team,
+        user: _user,
+    }
+ }).then(([registeredMessage, created]) => {
+        console.log(registeredMessage.get({
+            plain: true
+          }))
+        team = registeredMessage.get({ plain: true });
+    });
 }
 
 const PORT = 5000;

@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import Team from "./pages/Team";
 import IdeaBox from "./pages/IdeaBox";
 import MenuBar from "./components/menus/MenuBar";
+import MessageBoard from "./pages/MessageBoard";
 
 const App = () => {
     return (
@@ -14,7 +15,7 @@ const App = () => {
             <UserProvider>
                 <Route path="/" component={MenuBar} />
                 <Route path="/profile" component={Profile} />
-                <Route path="/messageBoard" component={Profile} />
+                <Route path="/messageBoard" component={MessageBoard} />
                 <Route path="/dashboard" component={Profile} />
                 <Route path="/metrics" component={Profile} />
                 <Route path="/planning" component={Profile} />

@@ -98,16 +98,16 @@ UserCompetency.init({
         modelName: keys.MODEL.usercompetency
     });
 
-class MessageBoard extends Model { }
-MessageBoard.init({
-    team: {
-        type: Sequelize.STRING,
-        allowNull: false
-    }
-}, {
-        sequelize,
-        modelName: keys.MODEL.messageboard
-    });
+// class MessageBoard extends Model { }
+// MessageBoard.init({
+//     team: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     }
+// }, {
+//         sequelize,
+//         modelName: keys.MODEL.messageboard
+//     });
 
 class Message extends Model { }
 Message.init({
@@ -122,8 +122,13 @@ Message.init({
             len: [1, 255]
         }
     },
-    board: {
-        type: Sequelize.STRING
+    date: {
+        type: Sequelize.DATE,
+        allowNull: false
+    },
+    team: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 }, {
         sequelize,
@@ -229,7 +234,7 @@ module.exports = {
     Idea,
     // IdeaBox,
     Message,
-    MessageBoard,
+    // MessageBoard,
     UserCompetency,
     Competency,
     Team,
