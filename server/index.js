@@ -11,6 +11,7 @@ let user = {};
 let allTeams = {};
 let allIdeas = {};
 let allMessages = {};
+let allRetroSpective = {};
 
 passport.serializeUser((user, cb) => {
     cb(null, user);
@@ -273,6 +274,39 @@ app.post('/api/setProfile',function(req,res){
     res.end("yes");
     synchronizeUser();
 });
+
+// ------- RetroSpective ---------
+
+function synchronizeRetroSpective(){
+    connections.Retrospective.findAll().then(_retro => {
+        allRetroSpective = JSON.stringify(_retro, null, 4)
+        console.log(chalk.green("RetroSpective table synchronazition done!"));
+    }); 
+}
+
+// function updateProfileToScumMaster(userName, _rank){
+//     connections.User.update({ rank: _rank}, {
+//         where: {
+//             name: userName
+//         }
+//       }).then(() => {
+//         console.log(`${userName} set to  ${_rank} successfully`);
+//       });
+// }
+
+app.get("/retrospective", (req, res) => {
+    synchronizeRetroSpective();
+    console.log(chalk.green("getting retrospectives!"));
+    res.send(allRetroSpective);
+});
+
+// app.post('/api/setProfile',function(req,res){
+//     let role=req.body.rank;
+//     let user = req.body.user;
+//     updateProfileToScumMaster(user,role);
+//     res.end("yes");
+//     synchronizeRetroSpective();
+// });
 
 const PORT = 5000;
 app.listen(PORT);

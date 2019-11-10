@@ -180,7 +180,7 @@ Retrospective.init({
     },evaluation: { // good / bad // todo
         type: Sequelize.ENUM,
         allowNull: false,
-        values: ["Worked well", "To be improve", "Want to do in next sprint"]
+        values: ["Worked well", "To be improved", "Want to do in next sprint"]
     },
     description: {
         type: Sequelize.STRING,
@@ -188,7 +188,11 @@ Retrospective.init({
     }, roomName: {
         type: Sequelize.STRING,
         allowNull: false
+    },value: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
     }
+
 }, {
         sequelize,
         modelName: keys.MODEL.retorspective
