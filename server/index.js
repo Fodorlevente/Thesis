@@ -284,15 +284,16 @@ function synchronizeRetroSpective(){
     }); 
 }
 
-// function updateProfileToScumMaster(userName, _rank){
-//     connections.User.update({ rank: _rank}, {
-//         where: {
-//             name: userName
-//         }
-//       }).then(() => {
-//         console.log(`${userName} set to  ${_rank} successfully`);
-//       });
-// }
+function createNewRetroComment(_description, _roomName, _evaluation , _date,  _team){
+    connections.Retrospective.findOrCreate({ where: { 
+        description: _description,
+        date: _date,
+        team: _team,
+        evaluation: _evaluation,
+        roomName: _roomName
+    }
+ });
+}
 
 app.get("/retrospective", (req, res) => {
     synchronizeRetroSpective();
@@ -300,13 +301,16 @@ app.get("/retrospective", (req, res) => {
     res.send(allRetroSpective);
 });
 
-// app.post('/api/setProfile',function(req,res){
-//     let role=req.body.rank;
-//     let user = req.body.user;
-//     updateProfileToScumMaster(user,role);
-//     res.end("yes");
-//     synchronizeRetroSpective();
-// });
+app.post('/api/sendRetroSpective',function(req,res){
+    let description=req.body.description;
+    let date = req.body.date;
+    let team=req.body.team;
+    let evaluation = req.body.evaluation;
+    let roomName = req.body.roomName;
+    createNewRetroComment(description,roomName,evaluation,date,team);
+    res.end("yes");
+    synchronizeRetroSpective();
+});
 
 const PORT = 5000;
 app.listen(PORT);

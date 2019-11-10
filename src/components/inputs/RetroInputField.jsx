@@ -37,15 +37,16 @@ export default function RetroInputField(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: values.name,
+        description: values.name,
         date: addDate(),
         team: props.memberOfTeam,
-        user: props.user,
+        roomName: props.roomName,
+        evaluation: props.label,
       }),
     }).then((response) => {
       if(response.status === 200){
         setValues({...values, showMessage: true});
-        props.addMessage(values.name);
+        props.addMessage(values.name,props.label);
       }
     });
   }
