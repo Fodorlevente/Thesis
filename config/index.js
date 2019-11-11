@@ -18,7 +18,7 @@ const MODEL = {
     message: 'message',
     messageboard: 'messageboard',
     idea: 'idea',
-    ideabox: 'ideabox',
+    issue: 'issue',
     competency: 'competency'
 }
 

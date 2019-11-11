@@ -135,15 +135,26 @@ Message.init({
         modelName: keys.MODEL.message
     });
 
-// class IdeaBox extends Model { }
-// IdeaBox.init({
-//     team: {
+// class Issue extends Model { }
+// Issue.init({
+//     evaluation: { // good / bad // todo
+//         type: Sequelize.ENUM,
+//         allowNull: false,
+//         values: ["Worked well", "To be improved", "Want to do in next sprint"]
+//     },
+//     description: {
 //         type: Sequelize.STRING,
 //         allowNull: false
+//     }, roomName: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },value: {
+//         type: Sequelize.INTEGER,
+//         defaultValue: 0
 //     }
 // }, {
 //         sequelize,
-//         modelName: keys.MODEL.ideabox
+//         modelName: keys.MODEL.issue
 //     });
 
 class Idea extends Model { }

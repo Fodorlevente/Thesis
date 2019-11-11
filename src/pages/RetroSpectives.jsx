@@ -6,6 +6,8 @@ import RetroCard from "../components/cards/RetroCard";
 import RetroInputField from '../components/inputs/RetroInputField';
 import UserProvider from "../contexts/UserProvider";
 import _ from "lodash";
+import RetroCreator from "../components/inputs/RetroCreator";
+import RetroRoomCard from "../components/cards/RetroRoomCard";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,14 +40,23 @@ export default function RetroSpectives() {
     }, []);
 
     function addMessage(messageName, _evaluation){
-      // console.log(JSON.stringify(retros));
       setRetros([...retros, {id: Math.floor(Math.random()*100) , description: messageName, value: 0, evaluation: _evaluation, team: userData.team}]);
     }
 
 
   return (
     <div className={classes.root}>
-        <Grid container spacing={3} border={1} alignItems="center">
+      <p className="page-title" style={{ textAlign: "center" }}>
+                {userData.team} retrospective board
+      </p>
+      <RetroCreator />
+      <Grid container justify="center"> 
+        <RetroRoomCard name="Alma"/>
+        <RetroRoomCard name="Alma"/>
+        <RetroRoomCard name="Alma"/>
+        <RetroRoomCard name="Alma"/>
+      </Grid>
+        {/* <Grid container spacing={3} border={1} alignItems="center">
         <Grid item xs>
           <Paper className={classes.paper}>Worked well</Paper>
           {_.isEmpty(retros) ?
@@ -76,7 +87,7 @@ export default function RetroSpectives() {
           ))}
           <RetroInputField  label="Want to do in next sprint" memberOfTeam={userData.team} roomName="PI1932" addMessage={addMessage}/>
         </Grid>
-      </Grid>
+      </Grid> */}
     </div>
   );
 }
