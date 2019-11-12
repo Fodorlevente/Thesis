@@ -28,16 +28,16 @@ export default function RetroSpectives() {
   const userData = useContext(UserProvider.context);
   const [retros, setRetros] = useState({});
 
-  useEffect(() => {
-      fetch('/retrospective')
-      .then(response => response.json())
-      .then(data => {
-        setRetros(data);
-      })
-      .catch(error => {
-          console.log(error)
-      })
-    }, []);
+  // useEffect(() => {
+  //     fetch('/retrospective')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       setRetros(data);
+  //     })
+  //     .catch(error => {
+  //         console.log(error)
+  //     })
+  //   }, []);
 
     function addMessage(messageName, _evaluation){
       setRetros([...retros, {id: Math.floor(Math.random()*100) , description: messageName, value: 0, evaluation: _evaluation, team: userData.team}]);
@@ -49,7 +49,7 @@ export default function RetroSpectives() {
       <p className="page-title" style={{ textAlign: "center" }}>
                 {userData.team} retrospective board
       </p>
-      <RetroCreator />
+      <RetroCreator memberOfTeam={userData.team} />
       <Grid container justify="center"> 
         <RetroRoomCard name="Alma"/>
         <RetroRoomCard name="Alma"/>

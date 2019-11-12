@@ -295,22 +295,34 @@ function createNewRetroComment(_description, _roomName, _evaluation , _date,  _t
  });
 }
 
+
 app.get("/retrospective", (req, res) => {
     synchronizeRetroSpective();
     console.log(chalk.green("getting retrospectives!"));
     res.send(allRetroSpective);
 });
 
-app.post('/api/sendRetroSpective',function(req,res){
-    let description=req.body.description;
-    let date = req.body.date;
-    let team=req.body.team;
-    let evaluation = req.body.evaluation;
-    let roomName = req.body.roomName;
-    createNewRetroComment(description,roomName,evaluation,date,team);
-    res.end("yes");
-    synchronizeRetroSpective();
+app.post('/api/createRetroSpective',function(req,res){
+    let retrospective = new connections.Retrospective({ 
+        date: req.body.date,
+        roomName: req.body.roomName
+    });
+    getTeam(req.body.team).then(fos =>{
+        retrospective.teamId = fos.id;
+    }).then(response => {
+        retrospective.save();
+    });
 });
+
+const getTeam = team => {
+    return connections.Team.findOne({ 
+        where: {name: team} 
+    }).then(response =>{
+        console.log(response);
+        return response;
+    });
+};
+
 
 const PORT = 5000;
 app.listen(PORT);

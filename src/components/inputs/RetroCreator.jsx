@@ -23,8 +23,43 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function RetroCreator() {
+
+export default function RetroCreator(props) {
   const classes = useStyles();
+  const [values, setValues] = React.useState({
+    name: '',
+    multiline: 'Controlled',
+    showMessage: false,
+  });
+
+  function createRetro() {
+    fetch('/api/createRetroSpective', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        date: addDate(),
+        team: props.memberOfTeam,
+        roomName: values.name,
+      }),
+    }).then((response) => {
+      if(response.status === 200){
+        setValues({...values, showMessage: true});
+        props.addMessage(values.name,props.label);
+      }
+    });
+  }
+
+  const handleChange = name => event => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  function addDate(){
+    const today = Date.now();
+    return (new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit'}).format(today));
+  }
 
   return (
     <form className={classes.container} noValidate autoComplete="off">
@@ -35,10 +70,12 @@ export default function RetroCreator() {
           label="Name of the room"
           margin="normal"
           variant="outlined"
+          value={values.name}
+          onChange={handleChange('name')}
           fullWidth
           required
         />
-        <Fab color="primary" aria-label="add" className={classes.fab}>
+        <Fab color="primary" aria-label="add" className={classes.fab} onClick={() => createRetro()}>
             <AddIcon />
         </Fab>
       </div>

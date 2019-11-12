@@ -135,27 +135,47 @@ Message.init({
         modelName: keys.MODEL.message
     });
 
-// class Issue extends Model { }
-// Issue.init({
-//     evaluation: { // good / bad // todo
-//         type: Sequelize.ENUM,
-//         allowNull: false,
-//         values: ["Worked well", "To be improved", "Want to do in next sprint"]
-//     },
-//     description: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     }, roomName: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     },value: {
-//         type: Sequelize.INTEGER,
-//         defaultValue: 0
-//     }
-// }, {
-//         sequelize,
-//         modelName: keys.MODEL.issue
-//     });
+
+class Issue extends Model {}
+Issue.init({
+    value: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    description: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    evaluation: { 
+        type: Sequelize.ENUM,
+        allowNull: false,
+        values: ["Worked well", "To be improved", "Want to do in next sprint"]
+    },
+},{
+    sequelize,
+    modelName: keys.MODEL.issue
+});
+
+class Retrospective extends Model { }
+Retrospective.init({
+    date: {
+        type: Sequelize.DATE,
+        allowNull: false
+    },
+    roomName: {
+        type: Sequelize.STRING,
+        allowNull: false
+    }
+}, {
+        sequelize,
+        modelName: keys.MODEL.retorspective
+    });
+
+Retrospective.belongsTo(Team);
+Retrospective.hasMany(Issue);
+Issue.belongsTo(Retrospective);
+Team.hasMany(Retrospective);
 
 class Idea extends Model { }
 Idea.init({
@@ -178,55 +198,6 @@ Idea.init({
         sequelize,
         modelName: keys.MODEL.idea
     });
-
-class Retrospective extends Model { }
-Retrospective.init({
-    date: {
-        type: Sequelize.DATE,
-        allowNull: false
-    },
-    team: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },evaluation: { // good / bad // todo
-        type: Sequelize.ENUM,
-        allowNull: false,
-        values: ["Worked well", "To be improved", "Want to do in next sprint"]
-    },
-    description: {
-        type: Sequelize.STRING,
-        allowNull: false
-    }, roomName: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },value: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
-    }
-
-}, {
-        sequelize,
-        modelName: keys.MODEL.retorspective
-    });
-
-// class RetrospectiveFinding extends Model { }
-// RetrospectiveFinding.init({
-//     retrospectiveid: {
-//         type: Sequelize.INTEGER,
-//         allowNull: false
-//     },
-//     evaluation: { // good / bad // todo
-//         type: Sequelize.DATE,
-//         allowNull: false
-//     },
-//     description: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     }
-// }, {
-//         sequelize,
-//         modelName: keys.MODEL.retorspectivefinding
-//     });
 
 
 class NicoNico extends Model { }
@@ -259,6 +230,7 @@ module.exports = {
     Idea,
     // IdeaBox,
     Message,
+    Issue,
     // MessageBoard,
     UserCompetency,
     Competency,
