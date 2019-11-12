@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import RetroCard from "../components/cards/RetroCard";
 import RetroInputField from '../components/inputs/RetroInputField';
 import UserProvider from "../contexts/UserProvider";
+import TeamProvider from "../contexts/TeamProvider";
 import _ from "lodash";
 import RetroCreator from "../components/inputs/RetroCreator";
 import RetroRoomCard from "../components/cards/RetroRoomCard";
@@ -19,30 +20,40 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
     background: "#FB6542"
-    // background: "#f9ccaa"
   },
 }));
 
 export default function RetroSpectives() {
   const classes = useStyles();
   const userData = useContext(UserProvider.context);
+  const teamData = useContext(TeamProvider.context);
+
   const [retros, setRetros] = useState({});
 
-  // useEffect(() => {
-  //     fetch('/retrospective')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       setRetros(data);
-  //     })
-  //     .catch(error => {
-  //         console.log(error)
-  //     })
-  //   }, []);
+  useEffect(() => {
+      fetch('/retrospective')
+      .then(response => response.json())
+      .then(data => {
+        setRetros(data);
+      })
+      .catch(error => {
+          console.log(error)
+      })
+    }, []);
 
     function addMessage(messageName, _evaluation){
       setRetros([...retros, {id: Math.floor(Math.random()*100) , description: messageName, value: 0, evaluation: _evaluation, team: userData.team}]);
     }
 
+    function generateListOfRooms(){
+      console.log(teamData);
+      return(
+        Object.keys(retros).map((key) => (
+          <RetroRoomCard name={retros[key].roomName}/>
+        ))
+      );
+    }
+  
 
   return (
     <div className={classes.root}>
@@ -51,11 +62,9 @@ export default function RetroSpectives() {
       </p>
       <RetroCreator memberOfTeam={userData.team} />
       <Grid container justify="center"> 
-        <RetroRoomCard name="Alma"/>
-        <RetroRoomCard name="Alma"/>
-        <RetroRoomCard name="Alma"/>
-        <RetroRoomCard name="Alma"/>
+        {generateListOfRooms()}
       </Grid>
+
         {/* <Grid container spacing={3} border={1} alignItems="center">
         <Grid item xs>
           <Paper className={classes.paper}>Worked well</Paper>

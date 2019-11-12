@@ -12,7 +12,7 @@ let allTeams = {};
 let allIdeas = {};
 let allMessages = {};
 let allRetroSpective = {};
-
+let singleTeamObjForProvider = {};
 passport.serializeUser((user, cb) => {
     cb(null, user);
 });
@@ -98,10 +98,28 @@ app.get("/team", (req, res) => {
     res.send(allTeams);
 });
 
+app.get("/teamProvider", (req, res) => {
+    createTeamContext();
+    res.send(singleTeamObjForProvider);
+});
+
+// Elkészítettem az Objektumot ami az id-t és a csaptnevet tartalmazza
+// ez alaőpkán el kell készíteni egy teamCOntextet, ami segítségéve
+// tudok szűrni a az összes retro között retroId alapján ami vlaójában a team Id
+
+function createTeamContext(){
+    connections.Team.findOne({ where: 
+        {name: user.team } 
+    }).then(team => {
+        singleTeamObjForProvider =  (JSON.stringify(team, null, 4));
+    }); 
+}
+
 app.post('/api/jointeam',function(req,res){
     var teamToJoin=req.body.team;
     var user = req.body.name;
     joinToTeam(teamToJoin,user);
+    createTeamContext();
     res.end("yes");
 });
 
@@ -281,6 +299,7 @@ function synchronizeRetroSpective(){
     connections.Retrospective.findAll().then(_retro => {
         allRetroSpective = JSON.stringify(_retro, null, 4)
         console.log(chalk.green("RetroSpective table synchronazition done!"));
+        console.log(chalk.red(user.team));
     }); 
 }
 
@@ -307,11 +326,12 @@ app.post('/api/createRetroSpective',function(req,res){
         date: req.body.date,
         roomName: req.body.roomName
     });
-    getTeam(req.body.team).then(fos =>{
-        retrospective.teamId = fos.id;
+    getTeam(req.body.team).then(_team =>{
+        retrospective.teamId = _team.id;
     }).then(response => {
         retrospective.save();
     });
+    synchronizeRetroSpective();
 });
 
 const getTeam = team => {
@@ -322,7 +342,6 @@ const getTeam = team => {
         return response;
     });
 };
-
 
 const PORT = 5000;
 app.listen(PORT);
