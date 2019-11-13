@@ -23,9 +23,9 @@ export default function RetroRoomCard(props) {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.root} >
+    <Paper className={classes.root} onClick={props.onClickEvent} id={props.data.id}>
       <Typography variant="h5" component="h3" className={classes.text}>
-        {props.name}
+        {props.data.roomName}
       </Typography>
     </Paper>
   );

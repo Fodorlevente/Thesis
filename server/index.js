@@ -12,7 +12,7 @@ let allTeams = {};
 let allIdeas = {};
 let allMessages = {};
 let allRetroSpective = {};
-let singleTeamObjForProvider = {};
+
 passport.serializeUser((user, cb) => {
     cb(null, user);
 });
@@ -40,6 +40,7 @@ passport.use(new GoogleStrategy({
                 plain: true
               }))
             user = registeredUser.get({ plain: true });
+            getTeamIdForUserContext();
         });
         return cb(null, profile);
     }));
@@ -98,20 +99,16 @@ app.get("/team", (req, res) => {
     res.send(allTeams);
 });
 
-app.get("/teamProvider", (req, res) => {
-    createTeamContext();
-    res.send(singleTeamObjForProvider);
-});
-
 // Elkészítettem az Objektumot ami az id-t és a csaptnevet tartalmazza
 // ez alaőpkán el kell készíteni egy teamCOntextet, ami segítségéve
 // tudok szűrni a az összes retro között retroId alapján ami vlaójában a team Id
 
-function createTeamContext(){
+function getTeamIdForUserContext(){
     connections.Team.findOne({ where: 
         {name: user.team } 
     }).then(team => {
-        singleTeamObjForProvider =  (JSON.stringify(team, null, 4));
+        user["teamId"] = team.id;
+        console.log(chalk.bgYellow(JSON.stringify(user)));
     }); 
 }
 
@@ -295,8 +292,10 @@ app.post('/api/setProfile',function(req,res){
 
 // ------- RetroSpective ---------
 
-function synchronizeRetroSpective(){
-    connections.Retrospective.findAll().then(_retro => {
+function synchronizeRetroSpective(_teamId){
+    connections.Retrospective.findAll({ where: {
+        teamId: _teamId
+    }}).then(_retro => {
         allRetroSpective = JSON.stringify(_retro, null, 4)
         console.log(chalk.green("RetroSpective table synchronazition done!"));
         console.log(chalk.red(user.team));
@@ -315,8 +314,8 @@ function createNewRetroComment(_description, _roomName, _evaluation , _date,  _t
 }
 
 
-app.get("/retrospective", (req, res) => {
-    synchronizeRetroSpective();
+app.get("/retrospective/:teamId", (req, res) => {
+    synchronizeRetroSpective(req.params.teamId);
     console.log(chalk.green("getting retrospectives!"));
     res.send(allRetroSpective);
 });
@@ -331,7 +330,16 @@ app.post('/api/createRetroSpective',function(req,res){
     }).then(response => {
         retrospective.save();
     });
-    synchronizeRetroSpective();
+    // synchronizeRetroSpective();
+});
+
+app.post('/api/createIssue',function(req,res){
+    connections.Issue.findOrCreate({ where: { 
+        description: req.body.description,
+        evaluation: req.body.evaluation,
+        RetrospectiveId: req.body.RetrospectiveId
+        }
+    });
 });
 
 const getTeam = team => {

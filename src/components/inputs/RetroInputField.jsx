@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import RetroSelect from "./RetroSelect";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -24,13 +25,18 @@ export default function RetroInputField(props) {
     multiline: 'Controlled',
     showMessage: false,
   });
+  const [issueTpye, setIssueTpye] = React.useState('');
+
+  const handleChangeInSelect = event => {
+    setIssueTpye(event.target.value);
+  };
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
 
   function registerCommentForRetro() {
-    fetch('/api/sendRetroSpective', {
+    fetch('/api/createIssue', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -38,10 +44,8 @@ export default function RetroInputField(props) {
       },
       body: JSON.stringify({
         description: values.name,
-        date: addDate(),
-        team: props.memberOfTeam,
-        roomName: props.roomName,
-        evaluation: props.label,
+        evaluation: issueTpye,
+        RetrospectiveId: props.retroId
       }),
     }).then((response) => {
       if(response.status === 200){
@@ -70,6 +74,7 @@ export default function RetroInputField(props) {
         variant="outlined"
         fullWidth
       />
+      <RetroSelect handleChange={handleChangeInSelect} issueTpye={issueTpye} />
       <Button
         variant="contained"
         color="secondary"
