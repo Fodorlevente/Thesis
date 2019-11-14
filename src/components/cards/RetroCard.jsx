@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
   card: {
     maxWidth: "100%",
     margin: 20,
-    background: "#FFBC00"
+    background: "#E3E3E3"
   }
 }));
 
