@@ -50,14 +50,9 @@ export default function RetroInputField(props) {
     }).then((response) => {
       if(response.status === 200){
         setValues({...values, showMessage: true});
-        props.addMessage(values.name,props.label);
+        props.getIssues(props.retroId);
       }
     });
-  }
-
-  function addDate(){
-    const today = Date.now();
-    return (new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit'}).format(today));
   }
   
   return (

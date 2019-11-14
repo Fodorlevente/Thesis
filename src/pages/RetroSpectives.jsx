@@ -8,6 +8,8 @@ import UserProvider from "../contexts/UserProvider";
 import _ from "lodash";
 import RetroCreator from "../components/inputs/RetroCreator";
 import RetroRoomCard from "../components/cards/RetroRoomCard";
+import Button from '@material-ui/core/Button';
+import { copyFile } from 'fs';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,6 +22,10 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
     background: "#FB6542"
   },
+  button: {
+    margin: theme.spacing(2),
+    padding: '0 30px',
+  },
 }));
 
 export default function RetroSpectives() {
@@ -28,6 +34,7 @@ export default function RetroSpectives() {
 
   const [retros, setRetros] = useState({});
   const [activeRetro, setActiveRetro] = useState({});
+  let [issues, setIssues] = useState([]);
 
   useEffect(() => {
       fetch(`/retrospective/${userData.teamId}`)
@@ -40,10 +47,6 @@ export default function RetroSpectives() {
       })
     }, []);
 
-    function addMessage(messageName, _evaluation){
-      setRetros([...retros, {id: Math.floor(Math.random()*100) , description: messageName, value: 0, evaluation: _evaluation, team: userData.team}]);
-    }
-
     function generateListOfRooms(){
       return(
         Object.keys(retros).map((key) => (
@@ -52,11 +55,32 @@ export default function RetroSpectives() {
       );
     }
 
+    function getIssues(retroId){
+        fetch(`/api/issues/${retroId}`)
+        .then( res => res.json())
+        .then(res => {
+          setIssues(res);
+          console.log(`issues: ${JSON.stringify(issues)}`);
+          });
+    }
+
     function onClickEvent(e){
       setActiveRetro({
         retroName: e.currentTarget.textContent,
         retroId: e.currentTarget.id,
       });
+      getIssues(e.currentTarget.id);
+    }
+
+    function generateIssueItems(evalType){
+      return(
+        _.isEmpty(issues) ?
+          <p>There is no comment for this section</p> :
+          (issues).map((issue) =>(
+            issue.evaluation === evalType ?
+          <RetroCard description={issue.description} numberOfLikes={issue.value} /> : null
+        ))
+      )
     }
 
     function issuesView(){
@@ -65,34 +89,38 @@ export default function RetroSpectives() {
           <Grid container spacing={3} border={1} alignItems="center">
           <Grid item xs>
             <Paper className={classes.paper}>Worked well</Paper>
-            {_.isEmpty(retros) ?
-              <p>There is no comment for this section</p> :
-              Object.keys(retros).map((key) =>(
-              retros[key].team === userData.team && retros[key].evaluation === "Worked well" ?
-              <RetroCard description={retros[key].description} numberOfLikes={retros[key].value} /> : null
-            ))}
+            {generateIssueItems("Worked well")}
           </Grid>
           <Grid item xs>
             <Paper className={classes.paper} >To be improved</Paper>
-            {_.isEmpty(retros) ?
-              <p>There is no comment for this section</p> :
-              Object.keys(retros).map((key) =>(
-              retros[key].team === userData.team && retros[key].evaluation === "To be improved" ?
-              <RetroCard description={retros[key].description} numberOfLikes={retros[key].value}/> : null
-            ))}
+            {generateIssueItems("To be improved")}
           </Grid>
           <Grid item xs>
             <Paper className={classes.paper}>Want to do in next sprint</Paper>
-            {_.isEmpty(retros) ?
-              <p>There is no comment for this section</p> :
-              Object.keys(retros).map((key) =>(
-              retros[key].team === userData.team && retros[key].evaluation === "Want to do in next sprint" ?
-              <RetroCard description={retros[key].description} numberOfLikes={retros[key].value}/> : null
-            ))}
+            {generateIssueItems("Want to do in next sprint")}
           </Grid>
         </Grid>
-        <RetroInputField retroId={activeRetro.retroId} addMessage={addMessage}/>
+        <RetroInputField getIssues={getIssues} retroId={activeRetro.retroId}/>
       </div>
+      )
+    }
+
+    function clearRetro(){
+      setIssues([]);
+      setActiveRetro({})
+    }
+
+    function backButtonToRetro(){
+      return (
+        <Button
+        variant="contained"
+        color="secondary"
+        size="large"
+        className={classes.button}
+        onClick={() => clearRetro()}
+      >
+        Back
+      </Button>
       )
     }
   
@@ -111,6 +139,7 @@ export default function RetroSpectives() {
       </div> 
       : 
       <div>
+        {backButtonToRetro()}
         {issuesView()}
     </div>
   }

@@ -340,6 +340,19 @@ app.post('/api/createIssue',function(req,res){
         RetrospectiveId: req.body.RetrospectiveId
         }
     });
+    res.end("yes");
+});
+
+app.get("/api/issues/:retroId", (req, res) => {
+    let filteredIssues = {};
+    connections.Issue.findAll({where: {
+        RetrospectiveId: req.params.retroId
+        }
+    }).then(_issues => {
+        filteredIssues = JSON.stringify(_issues, null, 4)
+    }).then(response => {
+        res.send(filteredIssues);
+    });
 });
 
 const getTeam = team => {
