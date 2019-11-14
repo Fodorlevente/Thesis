@@ -1,7 +1,7 @@
 const keys = require('../config');
 const Sequelize = require('sequelize');
 const chalk = require('chalk');
-
+ /* C:\Users\Levi\Documents\dumps\Dump20191114 */
 const sequelize = new Sequelize(keys.MYSQL.name, keys.MYSQL.user, keys.MYSQL.password, {
     host: 'localhost',
     dialect: 'mysql',
@@ -42,9 +42,6 @@ User.init({
         validate: {
             isEmail: true,
         }
-    },
-    team: {
-        type: Sequelize.STRING
     },
     rank: {
         type: Sequelize.ENUM,
@@ -97,17 +94,6 @@ UserCompetency.init({
         sequelize,
         modelName: keys.MODEL.usercompetency
     });
-
-// class MessageBoard extends Model { }
-// MessageBoard.init({
-//     team: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     }
-// }, {
-//         sequelize,
-//         modelName: keys.MODEL.messageboard
-//     });
 
 class Message extends Model { }
 Message.init({
@@ -172,11 +158,6 @@ Retrospective.init({
         modelName: keys.MODEL.retorspective
     });
 
-Retrospective.belongsTo(Team);
-Retrospective.hasMany(Issue);
-Issue.belongsTo(Retrospective);
-Team.hasMany(Retrospective);
-
 class Idea extends Model { }
 Idea.init({
     team: {
@@ -202,10 +183,6 @@ Idea.init({
 
 class NicoNico extends Model { }
 NicoNico.init({
-    user: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
     value: {
         type: Sequelize.ENUM,
         allowNull: false,
@@ -220,12 +197,22 @@ NicoNico.init({
         modelName: keys.MODEL.niconico
     });
 
+Retrospective.belongsTo(Team);
+Retrospective.hasMany(Issue);
+Issue.belongsTo(Retrospective);
+Team.hasMany(Retrospective);
+
+NicoNico.belongsTo(User);
+User.hasMany(NicoNico);
+
+User.belongsTo(Team);
+Team.hasMany(User);
+
 sequelize.sync();
 
 
 module.exports = {
     NicoNico,
-    // RetrospectiveFinding,
     Retrospective,
     Idea,
     // IdeaBox,

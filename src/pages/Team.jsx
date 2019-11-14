@@ -42,7 +42,7 @@ export default function Team() {
                 </p> : 
                 <TeamTable 
                     teams={teams} 
-                    memberOfTeam={userData.team} 
+                    memberOfTeam={userData.teamId} 
                     removeTeam={removeTeam}
                     userName={userData.name}
                 />}

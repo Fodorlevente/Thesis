@@ -9,7 +9,6 @@ import _ from "lodash";
 import RetroCreator from "../components/inputs/RetroCreator";
 import RetroRoomCard from "../components/cards/RetroRoomCard";
 import Button from '@material-ui/core/Button';
-import { copyFile } from 'fs';
 
 const useStyles = makeStyles(theme => ({
   root: {

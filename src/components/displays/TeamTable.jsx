@@ -29,39 +29,39 @@ function generateTableContent(content, memberOfTeam, removeTeam, userName){
           {content[key].name}
         </TableCell>
         <TableCell align="right">
-          {generateActionButton(memberOfTeam, content[key].name, userName)}
+          {generateActionButton(memberOfTeam, content[key].id, userName)}
         </TableCell>
         <TableCell align="right">
-          {generateDeleteButton(content[key].name, removeTeam)}
+          {generateDeleteButton(content[key].id, removeTeam)}
         </TableCell>
       </TableRow>
     ))
   );
 }
 
-function generateActionButton(memberOfTeam, actualTeamName, userName){
+function generateActionButton(memberOfTeam, actualId, userName){
   return (
       <Button
         variant="contained"
-        color={memberOfTeam === actualTeamName ? "primary" : "secondary" }
+        color={memberOfTeam === actualId ? "primary" : "secondary" }
         size="large"
         className={useStyles.button}
-        onClick={() => joinTeam(actualTeamName, userName) }
+        onClick={() => joinTeam(actualId, userName) }
       >
-        {memberOfTeam === actualTeamName ? "Leave" : "Join" }
+        {memberOfTeam == actualId ? "Leave" : "Join" }
       </Button>
   )
 }
 
-function generateDeleteButton(teamName, removeTeam){
+function generateDeleteButton(actualId, removeTeam){
   return (
-    <IconButton  className={useStyles.button} aria-label="delete" onClick={() => deleteTeam(teamName, removeTeam) } >
+    <IconButton  className={useStyles.button} aria-label="delete" onClick={() => deleteTeam(actualId, removeTeam) } >
       <DeleteIcon />
     </IconButton>
   )
 }
 
-function deleteTeam(teamName, removeTeam) {
+function deleteTeam(actualId, removeTeam) {
   fetch('/api/deleteteam', {
     method: 'POST',
     headers: {
@@ -69,17 +69,17 @@ function deleteTeam(teamName, removeTeam) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      name: teamName,
+      id: actualId,
     }),
   }).then((response) => {
     if(response.status === 200){
-      removeTeam(teamName);
-      console.log(`${teamName} deleted`);
+      removeTeam(actualId);
+      console.log(`${actualId} deleted`);
     }
   });
 }
 
-function joinTeam(teamName, userName) {
+function joinTeam(actualId, userName) {
   fetch('/api/jointeam', {
     method: 'POST',
     headers: {
@@ -88,12 +88,12 @@ function joinTeam(teamName, userName) {
     },
     body: JSON.stringify({
       name: userName,
-      team: teamName,
+      teamId: actualId,
     }),
   }).then((response) => {
     if(response.status === 200){
       // removeTeam(teamName);
-      console.log(`${userName} joined ${teamName} `);
+      console.log(`${userName} joined ${actualId} `);
     }
   });
 }

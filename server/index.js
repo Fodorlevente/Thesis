@@ -40,7 +40,9 @@ passport.use(new GoogleStrategy({
                 plain: true
               }))
             user = registeredUser.get({ plain: true });
-            getTeamIdForUserContext();
+            if(user.teamId !== null){
+                getTeamNameForUserContext();
+            }
         });
         return cb(null, profile);
     }));
@@ -80,8 +82,8 @@ app.post('/api/team',function(req,res){
 });
 
 app.post('/api/deleteteam',function(req,res){
-    var teamNameToDelete=req.body.name;
-    deleteTeam(teamNameToDelete);
+    var teamIdToDelete=req.body.id;
+    deleteTeam(teamIdToDelete);
     res.end("yes");
 });
 
@@ -103,20 +105,19 @@ app.get("/team", (req, res) => {
 // ez alaőpkán el kell készíteni egy teamCOntextet, ami segítségéve
 // tudok szűrni a az összes retro között retroId alapján ami vlaójában a team Id
 
-function getTeamIdForUserContext(){
+function getTeamNameForUserContext(){
     connections.Team.findOne({ where: 
-        {name: user.team } 
+        {id: user.teamId } 
     }).then(team => {
-        user["teamId"] = team.id;
+        user["team"] = team.name;
         console.log(chalk.bgYellow(JSON.stringify(user)));
     }); 
 }
 
 app.post('/api/jointeam',function(req,res){
-    var teamToJoin=req.body.team;
+    var teamToJoin=req.body.teamId;
     var user = req.body.name;
     joinToTeam(teamToJoin,user);
-    createTeamContext();
     res.end("yes");
 });
 
@@ -132,23 +133,23 @@ function createNewTeam(teamName){
     });
 }
 
-function deleteTeam(teamName){
+function deleteTeam(teamId){
     connections.Team.destroy({
         where: {
-            name: teamName
+            id: teamId
         }
       }).then(() => {
         console.log(chalk.green("Team deleted"));
       });
 }
 
-function joinToTeam(teamName, userName){
-    connections.User.update({ team: teamName }, {
+function joinToTeam(teamId, userName){
+    connections.User.update({ teamId: teamId }, {
         where: {
             name: userName
         }
       }).then(() => {
-        console.log(`${userName} joined ${teamName} successfully`);
+        console.log(`${userName} joined ${teamId} successfully`);
       });
 }
 
@@ -363,6 +364,31 @@ const getTeam = team => {
         return response;
     });
 };
+
+// -------- NicoNico ----------
+
+app.get("/api/niconicos/", (req, res) => {
+    let niconicos = {};
+    let dbQuery = {where: {
+            include: {
+                model: connections.User,
+                where: {
+                    id: req.query.teamId
+                }
+            }
+        }
+    };
+    
+    connections.NicoNico.findAll(
+        dbQuery
+    ).then(_issues => {
+        niconicos = JSON.stringify(_issues, null, 4)
+    }).then(response => {
+        res.send(niconicos);
+        console.log(chalk.red(niconicos));
+    });
+});
+
 
 const PORT = 5000;
 app.listen(PORT);
