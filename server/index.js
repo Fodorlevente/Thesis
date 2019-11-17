@@ -6,6 +6,7 @@ const keys = require("../config");
 const chalk = require("chalk");
 const connections = require('../db/connections');
 const bodyParser = require('body-parser');
+const Sequelize = require('sequelize');
 
 let user = {};
 let allTeams = {};
@@ -314,7 +315,6 @@ function createNewRetroComment(_description, _roomName, _evaluation , _date,  _t
  });
 }
 
-
 app.get("/retrospective/:teamId", (req, res) => {
     synchronizeRetroSpective(req.params.teamId);
     console.log(chalk.green("getting retrospectives!"));
@@ -367,21 +367,33 @@ const getTeam = team => {
 
 // -------- NicoNico ----------
 
-app.get("/api/niconicos/", (req, res) => {
+app.get("/api/niconico/", (req, res) => {
+    console.log(chalk.yellow("IDE MOST BELEEMNTEM"));
+    const Op = Sequelize.Op;
     let niconicos = {};
-    let dbQuery = {where: {
-            include: {
-                model: connections.User,
-                where: {
-                    id: req.query.teamId
+    let dbQuery = {};
+    if(req.query.startDate !== "null"){
+        dbQuery["date"] = {
+            [Op.between] : [req.query.startDate, req.query.endDate]
+        }
+    }
+    console.log(chalk.green(JSON.stringify(dbQuery)));
+    console.log(chalk.green(JSON.stringify(req.query)));
+    connections.NicoNico.findAll(
+        {
+            include: [
+                {model: connections.User,
+                    where: {
+                        teamId: req.query.teamId
                 }
             }
-        }
-    };
+        ]
+        },{
+            where: dbQuery
+        }   
     
-    connections.NicoNico.findAll(
-        dbQuery
     ).then(_issues => {
+        console.log("meg lettem hivaaaaaa");
         niconicos = JSON.stringify(_issues, null, 4)
     }).then(response => {
         res.send(niconicos);
@@ -389,6 +401,56 @@ app.get("/api/niconicos/", (req, res) => {
     });
 });
 
+app.get("/api/niconicos/", (req, res) => {
+    let nicos = {};
+    let teamMembers = getTeamMembersByteamId(req.query.teamId);
+    console.log(teamMembers);
+    teamMembers.map(_member =>{
+        nicos[_member.id] =  getNicoNicoByUser(_member);
+    }).then(response => {
+        console.log(`Ez a belso fuggvenyes moka: ${nicos}`);
+        res.send(nicos);
+    })
+});
+
+function getTeamMembersByteamId(_teamId){
+    return connections.User.findAll({ where: {
+        teamId: _teamId
+    }}).then(response => {
+        return response;
+    })
+}
+
+function getNicoNicoByUser(_user){
+    return connections.NicoNico.findAll({ where: {
+        userId: _user.id
+    }}).then(response => {
+        return response;
+    })
+}
+
+
+app.post('/api/addNicoNico',function(req,res){
+    let userId=req.body.userId;
+    let date=req.body.date;
+    let value=req.body.value;
+    createNewNicoNico(userId,date,value);
+    res.end("yes");
+});
+
+function createNewNicoNico(_userId, _date,  _value){
+    connections.NicoNico.findOrCreate({ where: { 
+        date: _date,
+        value: _value,
+        userId: _userId,
+    }
+ }).then(([registeredNicoNico, created]) => {
+        console.log(registeredNicoNico.get({
+            plain: true
+          }))
+        // team = registeredMessage.get({ plain: true });
+    });
+}
 
 const PORT = 5000;
 app.listen(PORT);

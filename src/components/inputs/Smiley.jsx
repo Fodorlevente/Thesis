@@ -18,9 +18,9 @@ export default function Smiley(props) {
   
   return (
       <div>
-        <MoodBadTwoToneIcon className={classes.icon} value="1" />
-        <FaceTwoToneIcon className={classes.icon} value="3" />
-        <MoodTwoToneIcon className={classes.icon} value="5" />
+        <MoodBadTwoToneIcon color='error' className={classes.icon} onClick={(e) => props.postNicoNico(e,1)} />
+        <FaceTwoToneIcon className={classes.icon} onClick={(e) => props.postNicoNico(e,3)} />
+        <MoodTwoToneIcon className={classes.icon} onClick={(e) => props.postNicoNico(e,5)} />
       </div>
   );
 }
