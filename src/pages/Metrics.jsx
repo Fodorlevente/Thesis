@@ -10,6 +10,7 @@ const Metrics = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [niconico, setNicoNico] = useState([]);
+    const [teamMembers, setTeamMembers] = useState([]);
 
     function addDate(){
         const today = Date.now();
@@ -17,7 +18,7 @@ const Metrics = () => {
       }
 
     function postNicoNico(event, _value) {
-        console.log(_value);
+        //console.log(_value);
         fetch('/api/addNicoNico', {
             method: 'POST',
             headers: {
@@ -38,15 +39,28 @@ const Metrics = () => {
         //   });
     }
 
+    function getTeamMembers() {
+      fetch(`/api/niconicos/users/${userData.teamId}`)
+      .then(response => response.json())
+      .then(data => {
+        setTeamMembers(data);
+      })
+      .catch(error => {
+          console.log(error);
+      })
+  }
+
     return (
         <div className="page">
             {/* {getNicoNicos()} */}
+            {/* {getTeamMembers()} */}
             <Smiley postNicoNico={postNicoNico}/>
             <DatePicker name="Start date" selectedDate={startDate} setSelectedDate={setStartDate} />
             <DatePicker name="End date" selectedDate={endDate} setSelectedDate={setEndDate} />
             <NicoNicoTable startDate={startDate} endDate={endDate} userData={userData}/>
             {JSON.stringify(startDate)}
             {JSON.stringify(endDate)}
+            {JSON.stringify(teamMembers)}
         </div>
     );
 };

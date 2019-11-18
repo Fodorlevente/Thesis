@@ -13,6 +13,8 @@ let allTeams = {};
 let allIdeas = {};
 let allMessages = {};
 let allRetroSpective = {};
+let allNicoNicos = {};
+let teamMembers = {};
 
 passport.serializeUser((user, cb) => {
     cb(null, user);
@@ -90,7 +92,7 @@ app.post('/api/deleteteam',function(req,res){
 
 function synchronizeTeams(){
     connections.Team.findAll().then(teams => {
-        console.log(chalk.green("All teams:", JSON.stringify(teams, null, 4)));
+        // console.log(chalk.green("All teams:", JSON.stringify(teams, null, 4)));
         allTeams = JSON.stringify(teams, null, 4)
         console.log(chalk.green("Teams table synchronazition done!"));
     }); 
@@ -156,7 +158,7 @@ function joinToTeam(teamId, userName){
 
 function synchronizeIdeas(){
     connections.Idea.findAll().then(ideas => {
-        console.log(chalk.yellow("All Ideas:", JSON.stringify(ideas, null, 4)));
+        //console.log(chalk.yellow("All Ideas:", JSON.stringify(ideas, null, 4)));
         allIdeas = JSON.stringify(ideas, null, 4)
         console.log(chalk.green("Ideas table synchronazition done!"));
     }); 
@@ -229,7 +231,7 @@ function deleteIdea(ideaName){
 
 function synchronizeMessages(){
     connections.Message.findAll().then(messages => {
-        console.log(chalk.yellow("All messages:", JSON.stringify(messages, null, 4)));
+        // console.log(chalk.yellow("All messages:", JSON.stringify(messages, null, 4)));
         allMessages = JSON.stringify(messages, null, 4)
         console.log(chalk.green("Messages table synchronazition done!"));
     }); 
@@ -367,7 +369,7 @@ const getTeam = team => {
 
 // -------- NicoNico ----------
 
-app.get("/api/niconico/", (req, res) => {
+app.get("/api/niconicosss/", (req, res) => {
     console.log(chalk.yellow("IDE MOST BELEEMNTEM"));
     const Op = Sequelize.Op;
     let niconicos = {};
@@ -389,7 +391,7 @@ app.get("/api/niconico/", (req, res) => {
             }
         ]
         },{
-            where: dbQuery
+            where: dbQuery,
         }   
     
     ).then(_issues => {
@@ -401,25 +403,46 @@ app.get("/api/niconico/", (req, res) => {
     });
 });
 
-app.get("/api/niconicos/", (req, res) => {
-    let nicos = {};
-    let teamMembers = getTeamMembersByteamId(req.query.teamId);
-    console.log(teamMembers);
-    teamMembers.map(_member =>{
-        nicos[_member.id] =  getNicoNicoByUser(_member);
-    }).then(response => {
-        console.log(`Ez a belso fuggvenyes moka: ${nicos}`);
-        res.send(nicos);
-    })
-});
 
-function getTeamMembersByteamId(_teamId){
-    return connections.User.findAll({ where: {
-        teamId: _teamId
-    }}).then(response => {
-        return response;
+function getNicoNicos(res){
+    let rawUsersWithNicos = {};
+    connections.User.findAll({
+        include: [{
+            model: connections.NicoNico
+        }]
+    }
+    ).then(_nicos => {
+        rawUsersWithNicos = (JSON.stringify(_nicos, null, 4));
+        console.log(`Ezek azok:::::: ${rawUsersWithNicos}`);
+    }).then(response =>{
+        res.send(rawUsersWithNicos)
     })
 }
+
+app.get("/api/niconicos/", (req, res) => {
+    getNicoNicos(res);
+});
+
+function synchronizeNicoNicos(){
+    connections.NicoNico.findAll().then(niconicos => {
+        allNicoNicos = JSON.stringify(niconicos, null, 4)
+        console.log(`All NicoNicos: ${allNicoNicos}`);
+    });
+}
+
+function getTeamMembersByteamId(_teamId){
+    connections.User.findAll({ where: {
+        teamId: _teamId
+    }}).then(_members => {
+        teamMembers = JSON.stringify(_members, null, 4);
+        //console.log(`All TeamMembers: ${teamMembers}`);
+    });
+}
+
+app.get("/api/niconicos/users/:teamId", (req, res) => {
+    getTeamMembersByteamId(req.params.teamId);
+    res.send(teamMembers);
+});
 
 function getNicoNicoByUser(_user){
     return connections.NicoNico.findAll({ where: {

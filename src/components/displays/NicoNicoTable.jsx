@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -71,18 +71,25 @@ export default function NicoNicoTable(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [niconicos, setNicoNicos] = React.useState([]);
 
-  function getNicoNicos() {
-    fetch(`/api/niconicos/?teamId=${props.userData.teamId}&startDate=${props.startDate}&endDate=${props.endDate}`)
+useEffect(() => {
+  fetch(`/api/niconicos/?teamId=${props.userData.teamId}&startDate=${props.startDate}&endDate=${props.endDate}`)
     .then(response => response.json())
     .then(data => {
-        console.log(data);
-        // setNicoNico(data);
+        filterNiconicosForTeam(data, props.userData.teamId);
     })
     .catch(error => {
         console.log(error)
     })
-}
+}, []);
+
+  function filterNiconicosForTeam(data, _teamId){
+    let filtered = data.filter((_user) => {
+        return _user.teamId === _teamId;
+    })
+    setNicoNicos(filtered);
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -93,7 +100,7 @@ export default function NicoNicoTable(props) {
     setPage(0);
   };
 
-  getNicoNicos();
+  //getNicoNicos();
 
   return (
     <Paper className={classes.root}>
@@ -101,26 +108,42 @@ export default function NicoNicoTable(props) {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {columns.map(column => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
+            <TableCell
+                  key="nicodate"
+                  align="inherit"
                 >
-                  {column.label}
-                </TableCell>
-              ))}
+                  Name
+            </TableCell>
+            <TableCell
+                  key="nicodate"
+                  align="inherit"
+                >
+                  Date
+            </TableCell>
+            <TableCell
+                  key="nicodate"
+                  align="inherit"
+                >
+                  Value
+            </TableCell>
+              {/* {niconicos.map(_user => (
+                <TableCell
+                  key={_user.id}
+                  align="inherit"
+                >
+                  {_user.}
+                </TableCell> */}
+              {/* ))} */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
+            {niconicos.map(_user => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                  {columns.map(column => {
-                    const value = row[column.id];
+                <TableRow hover role="checkbox" tabIndex={-1} key={_user.id}>
+                  {_user.NicoNicos.map(_nicos => {
                     return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                      <TableCell key={_nicos.id} align="inherit">
+                        {_nicos.value}
                       </TableCell>
                     );
                   })}
@@ -130,7 +153,7 @@ export default function NicoNicoTable(props) {
           </TableBody>
         </Table>
       </div>
-      <TablePagination
+      {/* <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
         count={rows.length}
@@ -144,7 +167,7 @@ export default function NicoNicoTable(props) {
         }}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+      /> */}
     </Paper>
   );
 }
