@@ -10,6 +10,7 @@ import MenuBar from "./components/menus/MenuBar";
 import MessageBoard from "./pages/MessageBoard";
 import RetroSpective from "./pages/RetroSpectives";
 import Metrics from "./pages/Metrics";
+import DashBoard from "./pages/DashBoard";
 
 const App = () => {
     return (
@@ -18,7 +19,7 @@ const App = () => {
                 <Route path="/" component={MenuBar} />
                 <Route path="/profile" component={Profile} />
                 <Route path="/messageBoard" component={MessageBoard} />
-                <Route path="/dashboard" component={Profile} />
+                <Route path="/dashboard" component={DashBoard} />
                 <Route path="/metrics" component={Metrics} />
                 <Route path="/planning" component={Profile} />
                 <Route path="/retrospective" component={RetroSpective} />
