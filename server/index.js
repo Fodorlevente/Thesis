@@ -462,6 +462,7 @@ app.post('/api/addNicoNico',function(req,res){
 });
 
 function createNewNicoNico(_userId, _date,  _value){
+    console.log(`Meg lettem hivva ${_value}, ${_userId}`);
     connections.NicoNico.findOrCreate({ where: { 
         date: _date,
         value: _value,
@@ -471,7 +472,6 @@ function createNewNicoNico(_userId, _date,  _value){
         console.log(registeredNicoNico.get({
             plain: true
           }))
-        // team = registeredMessage.get({ plain: true });
     });
 }
 

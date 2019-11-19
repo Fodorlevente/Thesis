@@ -4,6 +4,8 @@ import _ from "lodash";
 import Smiley from "../components/inputs/Smiley";
 import DatePicker from "../components/inputs/DatePicker";
 import NicoNicoTable from "../components/displays/NicoNicoTable";
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
 const Metrics = () => {
     const userData = useContext(UserProvider.context);
@@ -18,7 +20,6 @@ const Metrics = () => {
       }
 
     function postNicoNico(event, _value) {
-        //console.log(_value);
         fetch('/api/addNicoNico', {
             method: 'POST',
             headers: {
@@ -30,13 +31,9 @@ const Metrics = () => {
               date: addDate(),
               value: _value
             }),
+          }).then(response =>{
+            console.log("NicoNico added!");
           });
-        //   .then((response) => {
-        //     if(response.status === 200){
-        //       ({...valuessetValues, showMessage: true});
-        //       props.addTeam(values.name);
-        //     }
-        //   });
     }
 
     function getTeamMembers() {
@@ -52,15 +49,19 @@ const Metrics = () => {
 
     return (
         <div className="page">
-            {/* {getNicoNicos()} */}
-            {/* {getTeamMembers()} */}
-            <Smiley postNicoNico={postNicoNico}/>
-            <DatePicker name="Start date" selectedDate={startDate} setSelectedDate={setStartDate} />
-            <DatePicker name="End date" selectedDate={endDate} setSelectedDate={setEndDate} />
-            <NicoNicoTable startDate={startDate} endDate={endDate} userData={userData}/>
-            {JSON.stringify(startDate)}
-            {JSON.stringify(endDate)}
-            {JSON.stringify(teamMembers)}
+            <Grid container spacing={3} style={{marginTop: 40}}>
+              <Grid item xs={2}>
+                <Typography component="p">
+                    What is your mood today?
+                </Typography>
+              </Grid>
+              <Grid item xs={10}>
+                <Smiley postNicoNico={postNicoNico}/>
+              </Grid>
+            </Grid>
+                <DatePicker name="Start date" selectedDate={startDate} setSelectedDate={setStartDate} />
+                <DatePicker name="End date" selectedDate={endDate} setSelectedDate={setEndDate} />
+                <NicoNicoTable startDate={startDate} endDate={endDate} userData={userData}/>
         </div>
     );
 };

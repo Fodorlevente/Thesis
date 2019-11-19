@@ -1,173 +1,90 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-
-const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: value => value.toLocaleString(),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: value => value.toLocaleString(),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: value => value.toFixed(2),
-  },
-];
-
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
+import Paper from '@material-ui/core/Paper';
+import MoodBadTwoToneIcon from '@material-ui/icons/MoodBadTwoTone';
+import MoodTwoToneIcon from '@material-ui/icons/MoodTwoTone';
+import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone';
 
 const useStyles = makeStyles({
   root: {
     width: '100%',
+    overflowX: 'auto',
   },
-  tableWrapper: {
-    maxHeight: 440,
-    overflow: 'auto',
+  table: {
+    minWidth: 650,
+  },
+  smiley: {
+    color: '#A2AB2C',
   },
 });
 
+
 export default function NicoNicoTable(props) {
   const classes = useStyles();
-  const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [niconicos, setNicoNicos] = React.useState([]);
 
-useEffect(() => {
-  fetch(`/api/niconicos/?teamId=${props.userData.teamId}&startDate=${props.startDate}&endDate=${props.endDate}`)
-    .then(response => response.json())
-    .then(data => {
-        filterNiconicosForTeam(data, props.userData.teamId);
-    })
-    .catch(error => {
-        console.log(error)
-    })
-}, []);
+  useEffect(() => {
+    fetch(`/api/niconicos/?teamId=${props.userData.teamId}&startDate=${props.startDate}&endDate=${props.endDate}`)
+      .then(response => response.json())
+      .then(data => {
+          filterNiconicosForTeam(data, props.userData.teamId);
+      })
+      .catch(error => {
+          console.log(error)
+      })
+  }, []);
 
-  function filterNiconicosForTeam(data, _teamId){
-    let filtered = data.filter((_user) => {
-        return _user.teamId === _teamId;
-    })
-    setNicoNicos(filtered);
+  function generateTableRows(name,data){
+    return(
+      Object.keys(data).map(_nicos => (
+        <TableRow key={data[_nicos].id}>
+        <TableCell component="th" scope="row">
+          {name}
+        </TableCell>
+        <TableCell align="left">{data[_nicos].date}</TableCell>
+        <TableCell align="left">{addSmiley(data[_nicos].value)}</TableCell>
+      </TableRow>
+      ))
+    )
   }
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = event => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  //getNicoNicos();
+  
+    function addSmiley(value){
+      switch(value){
+        case("1"): return(<MoodBadTwoToneIcon className={classes.smiley}/>);
+        case("3"): return(<FaceTwoToneIcon className={classes.smiley}/>);
+        case("5"): return(<MoodTwoToneIcon className={classes.smiley}/>);
+      }
+    }
+  
+    function filterNiconicosForTeam(data, _teamId){
+      let filtered = data.filter((_user) => {
+          return _user.teamId === _teamId;
+      })
+      setNicoNicos(filtered);
+    }
 
   return (
     <Paper className={classes.root}>
-      <div className={classes.tableWrapper}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-            <TableCell
-                  key="nicodate"
-                  align="inherit"
-                >
-                  Name
-            </TableCell>
-            <TableCell
-                  key="nicodate"
-                  align="inherit"
-                >
-                  Date
-            </TableCell>
-            <TableCell
-                  key="nicodate"
-                  align="inherit"
-                >
-                  Value
-            </TableCell>
-              {/* {niconicos.map(_user => (
-                <TableCell
-                  key={_user.id}
-                  align="inherit"
-                >
-                  {_user.}
-                </TableCell> */}
-              {/* ))} */}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {niconicos.map(_user => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={_user.id}>
-                  {_user.NicoNicos.map(_nicos => {
-                    return (
-                      <TableCell key={_nicos.id} align="inherit">
-                        {_nicos.value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
-      {/* <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        backIconButtonProps={{
-          'aria-label': 'previous page',
-        }}
-        nextIconButtonProps={{
-          'aria-label': 'next page',
-        }}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      /> */}
+      <Table className={classes.table} aria-label="niconico table" size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell align="left">Name</TableCell>
+            <TableCell align="left">Date</TableCell>
+            <TableCell align="left">Value</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {niconicos.map(_user => (
+            generateTableRows(_user.name,_user.NicoNicos)
+          ))}
+        </TableBody>
+      </Table>
     </Paper>
   );
 }

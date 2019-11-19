@@ -9,6 +9,9 @@ const useStyles = makeStyles(theme => ({
   icon: {
     width: 60,
     height: 60,
+    "&:hover": {
+      color: '#A2AB2C'
+    },
   }
 }));
 
@@ -18,7 +21,7 @@ export default function Smiley(props) {
   
   return (
       <div>
-        <MoodBadTwoToneIcon color='error' className={classes.icon} onClick={(e) => props.postNicoNico(e,1)} />
+        <MoodBadTwoToneIcon className={classes.icon} onClick={(e) => props.postNicoNico(e,1)} />
         <FaceTwoToneIcon className={classes.icon} onClick={(e) => props.postNicoNico(e,3)} />
         <MoodTwoToneIcon className={classes.icon} onClick={(e) => props.postNicoNico(e,5)} />
       </div>
