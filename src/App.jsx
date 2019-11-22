@@ -2,6 +2,7 @@ import React from 'react';
 import { Router, Route } from "react-router-dom";
 import history from "./history";
 import UserProvider from "./contexts/UserProvider";
+import CompetencyProvider from "./contexts/CompetencyProvider";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Team from "./pages/Team";
@@ -16,16 +17,18 @@ const App = () => {
     return (
         <Router history={history}>
             <UserProvider>
-                <Route path="/" component={MenuBar} />
-                <Route path="/profile" component={Profile} />
-                <Route path="/messageBoard" component={MessageBoard} />
-                <Route path="/dashboard" component={DashBoard} />
-                <Route path="/metrics" component={Metrics} />
-                <Route path="/planning" component={Profile} />
-                <Route path="/retrospective" component={RetroSpective} />
-                <Route path="/ideabox" component={IdeaBox} />
-                <Route path="/settings" component={Profile} />
-                <Route path="/team" component={Team} />
+                <CompetencyProvider >
+                    <Route path="/" component={MenuBar} />
+                    <Route path="/profile" component={Profile} />
+                    <Route path="/messageBoard" component={MessageBoard} />
+                    <Route path="/dashboard" component={DashBoard} />
+                    <Route path="/metrics" component={Metrics} />
+                    <Route path="/planning" component={Profile} />
+                    <Route path="/retrospective" component={RetroSpective} />
+                    <Route path="/ideabox" component={IdeaBox} />
+                    <Route path="/settings" component={Profile} />
+                    <Route path="/team" component={Team} />
+                </CompetencyProvider >
             </UserProvider>
             <Route path="/" exact component={Home} />
         </Router>

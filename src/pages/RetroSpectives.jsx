@@ -85,7 +85,7 @@ export default function RetroSpectives() {
     function issuesView(){
       return(
         <div>
-          <Grid container spacing={3} border={1} alignItems="center">
+          <Grid container spacing={3} border={1} alignItems="flex-start">
           <Grid item xs>
             <Paper className={classes.paper}>Worked well</Paper>
             {generateIssueItems("Worked well")}
@@ -132,7 +132,7 @@ export default function RetroSpectives() {
       {_.isEmpty(activeRetro) ? 
       <div>
       <RetroCreator memberOfTeam={userData.team} />
-      <Grid container justify="center"> 
+      <Grid container justify="center" > 
         {generateListOfRooms()}
       </Grid> 
       </div> 

@@ -5,6 +5,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const keys = require("../config");
 const chalk = require("chalk");
 const connections = require('../db/connections');
+// const {Team, User} = require('../db/connections'); Erre át kell írni
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 
@@ -83,6 +84,24 @@ app.post('/api/team',function(req,res){
     createNewTeam(newTeamName);
     res.end("yes");
 });
+
+app.get("/api/teamCompetencies/:teamId", (req, res) => {
+    synchronizeTeamCompetencies(req.params.teamId,res);
+});
+
+function synchronizeTeamCompetencies(_teamId,res){
+    let _teamCompetencies = {};
+    connections.TeamCompetency.findAll({ where: {teamId: _teamId},
+        include: {
+            model: connections.Competency
+        }
+    }).then(_competencies => {
+        _teamCompetencies = JSON.stringify(_retro, null, 4)
+    }).then(response => {
+        console.log(_teamCompetencies);
+        res.send(_teamCompetencies);
+    })
+}
 
 app.post('/api/deleteteam',function(req,res){
     var teamIdToDelete=req.body.id;
@@ -413,7 +432,6 @@ function getNicoNicos(res){
     }
     ).then(_nicos => {
         rawUsersWithNicos = (JSON.stringify(_nicos, null, 4));
-        console.log(`Ezek azok:::::: ${rawUsersWithNicos}`);
     }).then(response =>{
         res.send(rawUsersWithNicos)
     })
@@ -462,18 +480,64 @@ app.post('/api/addNicoNico',function(req,res){
 });
 
 function createNewNicoNico(_userId, _date,  _value){
-    console.log(`Meg lettem hivva ${_value}, ${_userId}`);
-    connections.NicoNico.findOrCreate({ where: { 
+    connections.NicoNico.create({  
         date: _date,
-        value: _value,
+        value: String(_value),
         userId: _userId,
-    }
- }).then(([registeredNicoNico, created]) => {
-        console.log(registeredNicoNico.get({
-            plain: true
-          }))
-    });
+ });
 }
 
+// ----------------- Competencies ---------------------
+
+app.post('/api/createCompetency',function(req,res){
+    let name=req.body.name;
+    createNewCompetency(name);
+    res.end("yes");
+});
+
+function createNewCompetency(_name){
+    connections.Competency.findOrCreate({ where:{
+        name : _name
+    }  
+ });
+}
+
+function getCompetencies(res){
+    let allCompetencies = {};
+    connections.Competency.findAll().then(_competencies => {
+        allCompetencies = (JSON.stringify(_competencies, null, 4));
+    }).then(response =>{
+        res.send(allCompetencies)
+    })
+}
+
+app.get("/api/competencies/", (req, res) => {
+    getCompetencies(res);
+});
+
+app.post('/api/addTeamCompetency',function(req,res){
+    let teamId=req.body.teamId;
+    let competencyId=req.body.competencyId;
+    addTeamCompetency(teamId,competencyId);
+    res.end("yes");
+});
+
+function addTeamCompetency(_teamId, _competencyId){
+    connections.TeamCompetency.findOrCreate({ where:{
+        teamId : _teamId,
+        competencyId : _competencyId
+    }
+})
+};
+ 
+
+// Faker.js sok felhasználóhoz + teszt
+// todo:
+    // cypress scenario recorder vagy a sima automatizált ui teszt
+    // data envben legyenek sec tokenek .env
+    // end-to end test postman
+
+    // komponens alapú fejlesztésről írni
+    
 const PORT = 5000;
 app.listen(PORT);

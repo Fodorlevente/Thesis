@@ -31,7 +31,7 @@ function getSteps() {
 function getStepContent(step) {
   switch (step) {
     case 0:
-        return `In this section you can check the datas of your profile, and you can set you as a Scrum Master of a team, if you ara a member of one.`;
+        return `In this section you can check the datas of your profile, and you can set you as a Scrum Master of a team, if you are a member of one.`;
     case 1:
         return 'You can create a team easily. Join or leave the team what you selected.';
     case 2:
@@ -44,7 +44,7 @@ function getStepContent(step) {
         return `TODO.`;
     case 5:
         return `In the Metrics page you can set your daily mood which is visile for the whole team. The scrum master is responsible for checkint theese metrics.
-                You can create and set knowledges in this section for getting a knowledge matrix for visualizing the knowledge of the team.`; 
+                You can create and set knowledges in this section for getting a competency matrix for visualizing the knowledge of the team.`; 
     case 6:
         return `If you are a member of a team, you can send messages for the team.`;      
     default:

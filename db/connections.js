@@ -68,25 +68,31 @@ class Competency extends Model { }
 Competency.init({
     name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
-    team: {
-        type: Sequelize.STRING
-    }
 }, {
         sequelize,
         modelName: keys.MODEL.competency
     });
 
+class TeamCompetency extends Model { }
+TeamCompetency.init({
+    teamId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+    },
+    competencyId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+    },
+    }, {
+        sequelize,
+        modelName: 'TeamCompetency'
+}); 
+
 class UserCompetency extends Model { }
 UserCompetency.init({
-    user: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    competency: {
-        type: Sequelize.STRING
-    },
     value: {
         type: Sequelize.INTEGER
     }
@@ -208,6 +214,23 @@ User.hasMany(NicoNico);
 User.belongsTo(Team);
 Team.hasMany(User);
 
+Team.belongsToMany(Competency, {through: {
+        model: TeamCompetency,
+        unique: false,
+    },
+    foreignKey: 'teamId'
+});
+Competency.belongsToMany(Team, {through: {
+    model: TeamCompetency,
+    unique: false,
+    },
+    foreignKey: 'competencyId'
+});
+UserCompetency.belongsTo(User);
+User.hasMany(UserCompetency);
+UserCompetency.belongsTo(Competency);
+Competency.hasMany(UserCompetency);
+
 sequelize.sync();
 
 
@@ -219,6 +242,7 @@ module.exports = {
     Message,
     Issue,
     // MessageBoard,
+    TeamCompetency,
     UserCompetency,
     Competency,
     Team,
