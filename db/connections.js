@@ -76,20 +76,20 @@ Competency.init({
         modelName: keys.MODEL.competency
     });
 
-class TeamCompetency extends Model { }
-TeamCompetency.init({
-    teamId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-    },
-    competencyId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-    },
-    }, {
-        sequelize,
-        modelName: 'TeamCompetency'
-}); 
+// class TeamCompetency extends Model { }
+// TeamCompetency.init({
+//     teamId: {
+//         type: Sequelize.INTEGER,
+//         allowNull: false,
+//     },
+//     competencyId: {
+//         type: Sequelize.INTEGER,
+//         allowNull: false,
+//     },
+//     }, {
+//         sequelize,
+//         modelName: 'TeamCompetency'
+// }); 
 
 class UserCompetency extends Model { }
 UserCompetency.init({
@@ -214,18 +214,8 @@ User.hasMany(NicoNico);
 User.belongsTo(Team);
 Team.hasMany(User);
 
-Team.belongsToMany(Competency, {through: {
-        model: TeamCompetency,
-        unique: false,
-    },
-    foreignKey: 'teamId'
-});
-Competency.belongsToMany(Team, {through: {
-    model: TeamCompetency,
-    unique: false,
-    },
-    foreignKey: 'competencyId'
-});
+Team.belongsToMany(Competency, {through: "TeamCompetency"});
+Competency.belongsToMany(Team, {through: "TeamCompetency"});
 UserCompetency.belongsTo(User);
 User.hasMany(UserCompetency);
 UserCompetency.belongsTo(Competency);
@@ -242,7 +232,7 @@ module.exports = {
     Message,
     Issue,
     // MessageBoard,
-    TeamCompetency,
+    // TeamCompetency,
     UserCompetency,
     Competency,
     Team,

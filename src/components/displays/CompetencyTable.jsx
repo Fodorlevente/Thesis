@@ -43,7 +43,7 @@ function generateAddToTeamButton(teamId, actualId){
         color="secondary"
         size="large"
         className={useStyles.button}
-        onClick={() => addCompetencyToTeam(actualId, teamId) }
+        onClick={() => addCompetencyToTeam(teamId, actualId) }
       >
         {/* {memberOfTeam == actualId ? "Remove" : "Add" } */}
         Add

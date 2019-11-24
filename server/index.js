@@ -90,17 +90,13 @@ app.get("/api/teamCompetencies/:teamId", (req, res) => {
 });
 
 function synchronizeTeamCompetencies(_teamId,res){
-    let _teamCompetencies = {};
-    connections.TeamCompetency.findAll({ where: {teamId: _teamId},
+    connections.Team.findOne({ where: {id: _teamId},
         include: {
             model: connections.Competency
         }
     }).then(_competencies => {
-        _teamCompetencies = JSON.stringify(_retro, null, 4)
-    }).then(response => {
-        console.log(_teamCompetencies);
-        res.send(_teamCompetencies);
-    })
+        res.send(_competencies);
+    });
 }
 
 app.post('/api/deleteteam',function(req,res){
@@ -523,13 +519,90 @@ app.post('/api/addTeamCompetency',function(req,res){
 });
 
 function addTeamCompetency(_teamId, _competencyId){
-    connections.TeamCompetency.findOrCreate({ where:{
-        teamId : _teamId,
-        competencyId : _competencyId
+    connections.Team.findOne({ where:{
+        id : _teamId,
     }
-})
+    }).then(_team =>{
+        _team.addCompetency(_competencyId);
+    })
 };
  
+app.post('/api/saveCompetency',function(req,res){
+    let competencyId=req.body.competencyId;
+    let userId=req.body.userId;
+    let value=req.body.value;
+
+    saveCompetency(competencyId,userId,value);
+    res.end("yes");
+});
+
+function saveCompetency(_competencyId, _userId, _value){
+    // connections.User.findOne({ where:{
+    //     id : _userId,
+    // }
+    // }).then(_user =>{
+    //     _user.addUserCompetency({
+    //         competencyId: _competencyId,
+    //         value: _value,
+    //         userId: _user.id
+    //     });
+    // })
+    // connections.UserCompetency.upsert({
+    //     competencyId: _competencyId,
+    //     value: _value,
+    //     userId: _userId
+    // })
+    // connections.UserCompetency.update({value: _value}, { fields: ['value'],
+    //  where: {
+    //     competencyId: _competencyId,
+    //     userId: _userId
+    //     }
+    // });
+
+    connections.UserCompetency.findOne({ where: 
+        {
+            competencyId: _competencyId,
+            userId: _userId
+        },
+    }).then(_competencies => {
+       if(_competencies === null){
+        createUserCompeteny(_value,_competencyId,_userId);
+       }else{
+        updateUserCompetency(_value,_competencyId,_userId);
+       }
+    });
+};
+
+function createUserCompeteny(_value, _competencyId, _userId){
+    connections.UserCompetency.create({  
+        value: _value,
+        userId: _userId,
+        competencyId: _competencyId
+ });
+}
+
+function updateUserCompetency(_value, _competencyId, _userId){
+    connections.UserCompetency.update({value: _value}, { fields: ['value'],
+     where: {
+        competencyId: _competencyId,
+        userId: _userId
+        }
+    });
+}
+
+function getUserCompetenciesByteamId(_teamId, res){
+    connections.User.findAll({ where: {teamId: _teamId},
+        include: {
+            model: connections.UserCompetency
+        }
+    }).then(_members => {
+        res.send(_members);
+    });
+}
+
+app.get("/api/usercompetency/:teamId", (req, res) => {
+    getUserCompetenciesByteamId(req.params.teamId, res);
+});
 
 // Faker.js sok felhasználóhoz + teszt
 // todo:

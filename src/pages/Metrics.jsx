@@ -9,10 +9,12 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import CompetencyInputField from '../components/inputs/CompetencyInputField';
 import CompetencyTable from "../components/displays/CompetencyTable";
+import DeleteMe from "./DeleteMe";
+import ChartDisplay from "../components/displays/ChartDisplay";
+import RadarChart from "../components/displays/RadarChart";
 
 const Metrics = () => {
     const userData = useContext(UserProvider.context);
-    const teamCompetencyData = useContext(CompetencyProvider.context);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [niconico, setNicoNico] = useState([]);
@@ -51,8 +53,11 @@ const Metrics = () => {
       })
   }
 
+  const competencies = ['céplusz', 'sdasdas', 'gdhgfhg'];
+
     return (
         <div className="page">
+          <CompetencyProvider >
             <Grid container spacing={3} style={{marginTop: 40}}>
               <Grid item xs={2}>
                 <Typography component="p">
@@ -68,7 +73,10 @@ const Metrics = () => {
                 <NicoNicoTable startDate={startDate} endDate={endDate} userData={userData}/>
             <CompetencyInputField />
             <CompetencyTable teamId={userData.teamId}/>
-            {JSON.stringify(teamCompetencyData)}
+              <DeleteMe userData={userData} />
+              <ChartDisplay teamId={userData.teamId} />
+              {/* <RadarChart teamId={userData.teamId} /> */}
+            </CompetencyProvider>
         </div>
     );
 };

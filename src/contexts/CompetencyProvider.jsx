@@ -8,7 +8,6 @@ const CompetencyProvider = ({ children }) => {
     const userData = useContext(UserProvider.context);
 
     useEffect( () => {
-        console.log("Ide belemenettteeem");
         fetch(`/api/teamCompetencies/${userData.teamId}`)
             .then( res => res.json())
             .then(res => setTeamCompetencies(res))

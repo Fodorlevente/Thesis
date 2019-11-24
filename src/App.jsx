@@ -17,7 +17,7 @@ const App = () => {
     return (
         <Router history={history}>
             <UserProvider>
-                <CompetencyProvider >
+                {/* <CompetencyProvider > */}
                     <Route path="/" component={MenuBar} />
                     <Route path="/profile" component={Profile} />
                     <Route path="/messageBoard" component={MessageBoard} />
@@ -28,7 +28,7 @@ const App = () => {
                     <Route path="/ideabox" component={IdeaBox} />
                     <Route path="/settings" component={Profile} />
                     <Route path="/team" component={Team} />
-                </CompetencyProvider >
+                {/* </CompetencyProvider > */}
             </UserProvider>
             <Route path="/" exact component={Home} />
         </Router>
