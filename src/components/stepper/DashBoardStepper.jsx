@@ -71,7 +71,7 @@ export default function DashBoardStepper() {
 
   return (
     <div className={classes.root}>
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper activeStep={activeStep} orientation="vertical" style={{ backgroundColor: "transparent" }}>
         {steps.map((label, index) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -101,7 +101,7 @@ export default function DashBoardStepper() {
         ))}
       </Stepper>
       {activeStep === steps.length && (
-        <Paper square elevation={0} className={classes.resetContainer}>
+        <Paper square elevation={0} className={classes.resetContainer} style={{ backgroundColor: "transparent" }}>
           <Typography>All steps completed!</Typography>
           <Button onClick={handleReset} className={classes.button}>
             Reset Stepps

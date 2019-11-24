@@ -119,10 +119,6 @@ app.get("/team", (req, res) => {
     res.send(allTeams);
 });
 
-// Elkészítettem az Objektumot ami az id-t és a csaptnevet tartalmazza
-// ez alaőpkán el kell készíteni egy teamCOntextet, ami segítségéve
-// tudok szűrni a az összes retro között retroId alapján ami vlaójában a team Id
-
 function getTeamNameForUserContext(){
     connections.Team.findOne({ where: 
         {id: user.teamId } 
@@ -449,7 +445,6 @@ function getTeamMembersByteamId(_teamId){
         teamId: _teamId
     }}).then(_members => {
         teamMembers = JSON.stringify(_members, null, 4);
-        //console.log(`All TeamMembers: ${teamMembers}`);
     });
 }
 
@@ -457,15 +452,6 @@ app.get("/api/niconicos/users/:teamId", (req, res) => {
     getTeamMembersByteamId(req.params.teamId);
     res.send(teamMembers);
 });
-
-function getNicoNicoByUser(_user){
-    return connections.NicoNico.findAll({ where: {
-        userId: _user.id
-    }}).then(response => {
-        return response;
-    })
-}
-
 
 app.post('/api/addNicoNico',function(req,res){
     let userId=req.body.userId;
@@ -537,28 +523,6 @@ app.post('/api/saveCompetency',function(req,res){
 });
 
 function saveCompetency(_competencyId, _userId, _value){
-    // connections.User.findOne({ where:{
-    //     id : _userId,
-    // }
-    // }).then(_user =>{
-    //     _user.addUserCompetency({
-    //         competencyId: _competencyId,
-    //         value: _value,
-    //         userId: _user.id
-    //     });
-    // })
-    // connections.UserCompetency.upsert({
-    //     competencyId: _competencyId,
-    //     value: _value,
-    //     userId: _userId
-    // })
-    // connections.UserCompetency.update({value: _value}, { fields: ['value'],
-    //  where: {
-    //     competencyId: _competencyId,
-    //     userId: _userId
-    //     }
-    // });
-
     connections.UserCompetency.findOne({ where: 
         {
             competencyId: _competencyId,

@@ -11,14 +11,51 @@ import CompetencyInputField from '../components/inputs/CompetencyInputField';
 import CompetencyTable from "../components/displays/CompetencyTable";
 import DeleteMe from "./DeleteMe";
 import ChartDisplay from "../components/displays/ChartDisplay";
-import RadarChart from "../components/displays/RadarChart";
+import PropTypes from 'prop-types';
+import SwipeableViews from 'react-swipeable-views';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      <Box p={3}>{children}</Box>
+    </Typography>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `full-width-tab-${index}`,
+    'aria-controls': `full-width-tabpanel-${index}`,
+  };
+}
+
 
 const Metrics = () => {
     const userData = useContext(UserProvider.context);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [niconico, setNicoNico] = useState([]);
-    const [teamMembers, setTeamMembers] = useState([]);
+    const theme = useTheme();
+    const [value, setValue] = React.useState(0);
 
     function addDate(){
         const today = Date.now();
@@ -42,22 +79,17 @@ const Metrics = () => {
           });
     }
 
-    function getTeamMembers() {
-      fetch(`/api/niconicos/users/${userData.teamId}`)
-      .then(response => response.json())
-      .then(data => {
-        setTeamMembers(data);
-      })
-      .catch(error => {
-          console.log(error);
-      })
-  }
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
-  const competencies = ['céplusz', 'sdasdas', 'gdhgfhg'];
+  const handleChangeIndex = index => {
+    setValue(index);
+  };
 
     return (
         <div className="page">
-          <CompetencyProvider >
+          {/* <CompetencyProvider >
             <Grid container spacing={3} style={{marginTop: 40}}>
               <Grid item xs={2}>
                 <Typography component="p">
@@ -75,7 +107,54 @@ const Metrics = () => {
             <CompetencyTable teamId={userData.teamId}/>
               <DeleteMe userData={userData} />
               <ChartDisplay teamId={userData.teamId} />
-              {/* <RadarChart teamId={userData.teamId} /> */}
+            </CompetencyProvider> */}
+
+            <CompetencyProvider >
+                    <AppBar position="static" color="default">
+                      <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        variant="fullWidth"
+                        aria-label="full width tabs example"
+                      >
+                        <Tab label="Nico Nico" {...a11yProps(0)} />
+                        <Tab label="Competencies" {...a11yProps(1)} />
+                        <Tab label="Competency Matrix" {...a11yProps(2)} />
+                      </Tabs>
+                    </AppBar>
+                    <SwipeableViews
+                      axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                      index={value}
+                      onChangeIndex={handleChangeIndex}
+                    >
+                      <TabPanel value={value} index={0} dir={theme.direction}>
+                          <Grid container spacing={3} style={{marginTop: 40}} container spacing={0} direction="column"  alignItems="center" justify="center">
+                              <h1 style={{display: 'flex', justifyContent: 'center'}}>What is your mood today?</h1>
+                              <Grid item xs={10} container spacing={0} direction="column"  alignItems="center" justify="center">
+                                <Smiley postNicoNico={postNicoNico}/>
+                              </Grid>
+                            </Grid>
+                            <DatePicker name="Start date" selectedDate={startDate} setSelectedDate={setStartDate} />
+                            <DatePicker name="End date" selectedDate={endDate} setSelectedDate={setEndDate} />
+                            <NicoNicoTable startDate={startDate} endDate={endDate} userData={userData}/>
+                      </TabPanel>
+                      <TabPanel value={value} index={1} dir={theme.direction}>
+                        {userData.rank==="Scrum Master" ? 
+                          <div>
+                            <CompetencyInputField />
+                            <CompetencyTable teamId={userData.teamId}/>
+                          </div>
+                          :
+                          <h1 style={{color: "red"}}>This section is available for Scrum Masters</h1>
+                        }
+                      </TabPanel>
+                      <TabPanel value={value} index={2} dir={theme.direction}>
+                          <DeleteMe userData={userData} />
+                          <ChartDisplay teamId={userData.teamId} />
+                      </TabPanel>
+                    </SwipeableViews>
             </CompetencyProvider>
         </div>
     );

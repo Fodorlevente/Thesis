@@ -31,9 +31,7 @@ export default function RadarChart(props) {
     }, []);
 
 function addDatasets(users){
-  console.log(`User: ${JSON.stringify(users)}`);
     let sets = [];
-    console.log(labels);
     users.map(_user => {
         sets.push(
             {
@@ -48,24 +46,20 @@ function addDatasets(users){
             }
         )
     }) 
-    console.log(`Szettszek: ${JSON.stringify(sets)}`);
     setUserCompetency(sets);
 }
 
 function generateCompetencyValues(userCompetencies){
   let ret = [];
-  console.log(`props.teamData: ${JSON.stringify(props.teamData)}`);
   let objectKeys = Object.keys(props.teamData);
   for(var index in objectKeys){
     let competencyId = objectKeys[index];
-    console.log(`CompetencyId: ${competencyId}, type: ${typeof(competencyId)}`);
     let matchingCompetency = userCompetencies.find(usercompetency => (
           usercompetency.competencyId === parseInt(competencyId)
     ));
     let competencyValue = matchingCompetency === undefined ? 0 : matchingCompetency.value;
     ret.push(competencyValue);
   }
-  console.log(`ret: ${ret}`);
   return ret;
 }
 
