@@ -287,20 +287,19 @@ function synchronizeUser(){
     }); 
 }
 
-function updateProfileToScumMaster(userName, _rank){
-    connections.User.update({ rank: _rank}, {
+function updateProfileToScumMaster(userName){
+    connections.User.update({ rank: "Scrum Master"}, {
         where: {
             name: userName
         }
       }).then(() => {
-        console.log(`${userName} set to  ${_rank} successfully`);
+        console.log(`${userName} set to Scrum Master successfully`);
       });
 }
 
 app.post('/api/setProfile',function(req,res){
-    let role=req.body.rank;
     let user = req.body.user;
-    updateProfileToScumMaster(user,role);
+    updateProfileToScumMaster(user);
     res.end("yes");
     synchronizeUser();
 });

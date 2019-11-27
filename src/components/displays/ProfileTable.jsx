@@ -28,7 +28,6 @@ export default function ProfileTable(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        rank: "Scrum Master",
         user: userData.name
       }),
     })
