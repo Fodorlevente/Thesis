@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function getSteps() {
-  return ['Profile', 'Team', 'IdeaBox', 'RetroSpective', 'Planning', 'Metrics', 'Message Board'];
+  return ['Profile', 'Team', 'IdeaBox', 'RetroSpective', 'Metrics', 'Message Board'];
 }
 
 function getStepContent(step) {
@@ -41,11 +41,9 @@ function getStepContent(step) {
         return `If you a member of a team, you can create issues on the selected retrospective room of your team. There are
                 three section for it: ( Worked well, To be improved, Want to do in next sprint).`;
     case 4:
-        return `TODO.`;
-    case 5:
         return `In the Metrics page you can set your daily mood which is visile for the whole team. The scrum master is responsible for checkint theese metrics.
                 You can create and set knowledges in this section for getting a competency matrix for visualizing the knowledge of the team.`; 
-    case 6:
+    case 5:
         return `If you are a member of a team, you can send messages for the team.`;      
     default:
       return 'Unknown step';

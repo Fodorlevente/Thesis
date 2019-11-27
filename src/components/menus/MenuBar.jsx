@@ -9,9 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Chat from '@material-ui/icons/Chat';
-import Settings from '@material-ui/icons/Settings';
 import BarChart from '@material-ui/icons/BarChart';
-import Work from '@material-ui/icons/Work';
 import ViewQuilt from '@material-ui/icons/ViewQuilt';
 import Feedback from '@material-ui/icons/Feedback';
 import Group from '@material-ui/icons/Group';
@@ -42,11 +40,6 @@ const menuItems = [
         icon: <BarChart/>
     },
     {
-        title: "Planning",
-        path: "/planning",
-        icon: <Work/>
-    },
-    {
         title: "Retrospective",
         path: "/retrospective",
         icon:  <Feedback/>
@@ -55,11 +48,6 @@ const menuItems = [
         title: "Idea Box",
         path: "/ideabox",
         icon: <Whatshot/>
-    },
-    {
-        title: "Settings",
-        path: "/settings",
-        icon: <Settings/>
     },
     {
         title: "Team",
@@ -113,10 +101,6 @@ const MenuBar = (props) => {
                     <LogoutIcon />
                 </a>
             }
-
- {/* this needs a huge refactoring... :'( */}
-            
-
         </div>
     );
 };

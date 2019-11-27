@@ -7,7 +7,6 @@ const Home = () =>{
 
     const terminalMsg = [
         "Create your team",
-        "Organize a planning",
         "Lets discuss in team chat",
         "Visualize the team performance and knowledge and other things in the Metrics section",
         "Organize a Sprint Retrospective"];
