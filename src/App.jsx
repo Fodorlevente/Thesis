@@ -2,7 +2,6 @@ import React from 'react';
 import { Router, Route } from "react-router-dom";
 import history from "./history";
 import UserProvider from "./contexts/UserProvider";
-import CompetencyProvider from "./contexts/CompetencyProvider";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Team from "./pages/Team";

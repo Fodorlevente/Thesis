@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import CompetencyInputField from '../components/inputs/CompetencyInputField';
 import CompetencyTable from "../components/displays/CompetencyTable";
-import DeleteMe from "./DeleteMe";
+import SliderContainer from "../components/displays/SliderConatiner";
 import ChartDisplay from "../components/displays/ChartDisplay";
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
@@ -89,26 +89,6 @@ const Metrics = () => {
 
     return (
         <div className="page">
-          {/* <CompetencyProvider >
-            <Grid container spacing={3} style={{marginTop: 40}}>
-              <Grid item xs={2}>
-                <Typography component="p">
-                    What is your mood today?
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Smiley postNicoNico={postNicoNico}/>
-              </Grid>
-            </Grid>
-                <DatePicker name="Start date" selectedDate={startDate} setSelectedDate={setStartDate} />
-                <DatePicker name="End date" selectedDate={endDate} setSelectedDate={setEndDate} />
-                <NicoNicoTable startDate={startDate} endDate={endDate} userData={userData}/>
-            <CompetencyInputField />
-            <CompetencyTable teamId={userData.teamId}/>
-              <DeleteMe userData={userData} />
-              <ChartDisplay teamId={userData.teamId} />
-            </CompetencyProvider> */}
-
             <CompetencyProvider >
                     <AppBar position="static" color="default">
                       <Tabs
@@ -151,7 +131,7 @@ const Metrics = () => {
                         }
                       </TabPanel>
                       <TabPanel value={value} index={2} dir={theme.direction}>
-                          <DeleteMe userData={userData} />
+                          <SliderContainer userData={userData} />
                           <ChartDisplay teamId={userData.teamId} />
                       </TabPanel>
                     </SwipeableViews>
