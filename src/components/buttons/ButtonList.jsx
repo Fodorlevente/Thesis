@@ -6,13 +6,9 @@ import { data } from "../../data";
 
 const ButtonList = () =>{
     return data.map( app => {
-        if(app.colors){
-            return <GradientButton app={app} key={app.name} />
-        }else{
             return (
                 <IconButton app={app} kex={app.name} />
             );
-        }
     });
 };
 
