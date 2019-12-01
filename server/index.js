@@ -5,7 +5,6 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const keys = require("../config");
 const chalk = require("chalk");
 const connections = require('../db/connections');
-// const {Team, User} = require('../db/connections'); Erre át kell írni
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 
@@ -243,7 +242,6 @@ function deleteIdea(ideaName){
 
 function synchronizeMessages(){
     connections.Message.findAll().then(messages => {
-        // console.log(chalk.yellow("All messages:", JSON.stringify(messages, null, 4)));
         allMessages = JSON.stringify(messages, null, 4)
         console.log(chalk.green("Messages table synchronazition done!"));
     }); 
