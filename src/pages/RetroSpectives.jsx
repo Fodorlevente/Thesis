@@ -36,6 +36,10 @@ export default function RetroSpectives() {
   let [issues, setIssues] = useState([]);
 
   useEffect(() => {
+    fetchRetroSpectivesPerTeamIdFromDB()
+    }, []);
+
+    function fetchRetroSpectivesPerTeamIdFromDB(){
       fetch(`/retrospective/${userData.teamId}`)
       .then(response => response.json())
       .then(data => {
@@ -44,7 +48,7 @@ export default function RetroSpectives() {
       .catch(error => {
           console.log(error)
       })
-    }, []);
+    }
 
     function generateListOfRooms(){
       return(
@@ -59,7 +63,6 @@ export default function RetroSpectives() {
         .then( res => res.json())
         .then(res => {
           setIssues(res);
-          console.log(`issues: ${JSON.stringify(issues)}`);
           });
     }
 
@@ -131,7 +134,7 @@ export default function RetroSpectives() {
       </p>
       {_.isEmpty(activeRetro) ? 
       <div>
-      <RetroCreator memberOfTeam={userData.team} />
+      <RetroCreator memberOfTeam={userData.team} fetchRetroSpectivesPerTeamIdFromDB={fetchRetroSpectivesPerTeamIdFromDB}/>
       <Grid container justify="center" > 
         {generateListOfRooms()}
       </Grid> 

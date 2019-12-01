@@ -12,6 +12,10 @@ export default function Team() {
     const [teams, setTeams] = useState({});
 
     useEffect(() => {
+        fetchTeamsFromDB()
+      }, []);
+
+      function fetchTeamsFromDB(){
         fetch('/team')
         .then(response => response.json())
         .then(data => {
@@ -20,14 +24,6 @@ export default function Team() {
         .catch(error => {
             console.log(error)
         })
-      }, []);
-
-      function removeTeam(teamName) {
-          setTeams(teams.filter((el) => (el.name !== teamName)));
-      }
-
-      function addTeam(teamName){
-       setTeams([...teams, {id: Math.floor(Math.random()*100) ,name: teamName}]);
       }
 
     return (
@@ -35,7 +31,7 @@ export default function Team() {
             <p className="page-title" style={{ textAlign: "center" }}>
                 Find or create Teams
             </p>
-            <CreateTeamInputField addTeam={addTeam}/>
+            <CreateTeamInputField fetchTeamsFromDB={fetchTeamsFromDB}/>
             {_.isEmpty(teams) ? 
                 <p className="page-title" style={{ textAlign: "center" }}>
                     {text}
@@ -43,7 +39,7 @@ export default function Team() {
                 <TeamTable 
                     teams={teams} 
                     memberOfTeam={userData.teamId} 
-                    removeTeam={removeTeam}
+                    fetchTeamsFromDB={fetchTeamsFromDB}
                     userName={userData.name}
                 />}
         </div>

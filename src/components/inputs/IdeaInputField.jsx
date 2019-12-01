@@ -39,21 +39,15 @@ export default function IdeaInputField(props) {
       },
       body: JSON.stringify({
         name: values.name,
-        date: addDate(),
         team: props.memberOfTeam,
         completed: false,
       }),
     }).then((response) => {
       if(response.status === 200){
         setValues({...values, showMessage: true});
-        props.addIdea(values.name);
+        props.fetchIdeasFromDB();
       }
     });
-  }
-
-  function addDate(){
-    const today = Date.now();
-    return (new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit'}).format(today));
   }
   
   return (

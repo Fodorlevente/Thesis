@@ -1,7 +1,6 @@
 
 import React from "react";
 import IconButton from "./IconButton";
-import GradientButton from "./GradientButton";
 import { data } from "../../data";
 
 const ButtonList = () =>{

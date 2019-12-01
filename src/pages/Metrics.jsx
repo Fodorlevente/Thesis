@@ -3,7 +3,6 @@ import UserProvider from "../contexts/UserProvider";
 import CompetencyProvider from "../contexts/CompetencyProvider";
 import _ from "lodash";
 import Smiley from "../components/inputs/Smiley";
-import DatePicker from "../components/inputs/DatePicker";
 import NicoNicoTable from "../components/displays/NicoNicoTable";
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -57,11 +56,6 @@ const Metrics = () => {
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
 
-    function addDate(){
-        const today = Date.now();
-        return (new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit'}).format(today));
-      }
-
     function postNicoNico(event, _value) {
         fetch('/api/addNicoNico', {
             method: 'POST',
@@ -71,7 +65,6 @@ const Metrics = () => {
             },
             body: JSON.stringify({
               userId: userData.id,
-              date: addDate(),
               value: _value
             }),
           }).then(response =>{
@@ -116,8 +109,6 @@ const Metrics = () => {
                                 <Smiley postNicoNico={postNicoNico}/>
                               </Grid>
                             </Grid>
-                            <DatePicker name="Start date" selectedDate={startDate} setSelectedDate={setStartDate} />
-                            <DatePicker name="End date" selectedDate={endDate} setSelectedDate={setEndDate} />
                             <NicoNicoTable startDate={startDate} endDate={endDate} userData={userData}/>
                       </TabPanel>
                       <TabPanel value={value} index={1} dir={theme.direction}>

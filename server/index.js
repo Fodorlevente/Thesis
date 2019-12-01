@@ -81,8 +81,8 @@ app.get("/auth/logout", (req, res) => {
 app.post('/api/team',function(req,res){
     var newTeamName=req.body.name;
     console.log(chalk.yellow("New Team name: = " + newTeamName));
-    createNewTeam(newTeamName);
-    res.end("yes");
+    createNewTeam(newTeamName, res);
+    // res.end("yes");
 });
 
 app.get("/api/teamCompetencies/:teamId", (req, res) => {
@@ -105,18 +105,18 @@ app.post('/api/deleteteam',function(req,res){
     res.end("yes");
 });
 
-function synchronizeTeams(){
+function synchronizeTeams(res){
     connections.Team.findAll().then(teams => {
-        // console.log(chalk.green("All teams:", JSON.stringify(teams, null, 4)));
         allTeams = JSON.stringify(teams, null, 4)
         console.log(chalk.green("Teams table synchronazition done!"));
-    }); 
+    }).then(() => {
+        res.send(allTeams);
+    });
 }
 
 app.get("/team", (req, res) => {
-    synchronizeTeams();
+    synchronizeTeams(res);
     console.log(chalk.green("getting teams!"));
-    res.send(allTeams);
 });
 
 function getTeamNameForUserContext(){
@@ -135,7 +135,7 @@ app.post('/api/jointeam',function(req,res){
     res.end("yes");
 });
 
-function createNewTeam(teamName){
+function createNewTeam(teamName, res){
     connections.Team.findOrCreate({ where: { 
         name: teamName
     }
@@ -144,6 +144,8 @@ function createNewTeam(teamName){
             plain: true
           }))
         team = registeredTeam.get({ plain: true });
+    }).then(() => {
+        res.end("yes");
     });
 }
 
@@ -167,26 +169,25 @@ function joinToTeam(teamId, userName){
       });
 }
 
-function synchronizeIdeas(){
+function synchronizeIdeas(res){
     connections.Idea.findAll().then(ideas => {
-        //console.log(chalk.yellow("All Ideas:", JSON.stringify(ideas, null, 4)));
         allIdeas = JSON.stringify(ideas, null, 4)
         console.log(chalk.green("Ideas table synchronazition done!"));
-    }); 
+    }).then(() => {
+        res.send(allIdeas);
+      });
 }
 
 app.get("/idea", (req, res) => {
-    synchronizeIdeas();
+    synchronizeIdeas(res);
     console.log(chalk.green("getting Ideas!"));
-    res.send(allIdeas);
 });
 
 app.post('/api/idea',function(req,res){
     var newIdeaMessage=req.body.name;
-    var newIdeaDate=req.body.date;
     var newIdeaTeam=req.body.team;
     var newIdeaCompleted=req.body.completed;
-    createNewIdea(newIdeaMessage,newIdeaDate,newIdeaTeam,newIdeaCompleted);
+    createNewIdea(newIdeaMessage,newIdeaTeam,newIdeaCompleted);
     res.end("yes");
 });
 
@@ -213,10 +214,10 @@ function completeIdea(ideaName){
       });
 }
 
-function createNewIdea(_message, _date, _team, _completed){
+function createNewIdea(_message, _team, _completed){
     connections.Idea.findOrCreate({ where: { 
         message: _message,
-        date: _date,
+        date: Sequelize.literal('CURRENT_TIMESTAMP'),
         team: _team,
         completed: _completed,
     }
@@ -280,11 +281,13 @@ function createNewMessage(_message, _user, _date,  _team){
 
 // ------- Profile / User ---------
 
-function synchronizeUser(){
+function synchronizeUser(res){
     connections.User.findAll().then(_user => {
         user = JSON.stringify(_user, null, 4)
         console.log(chalk.green("User table synchronazition done!"));
-    }); 
+    }).then(() => {
+        res.send(user);
+      });
 }
 
 function updateProfileToScumMaster(userName){
@@ -300,20 +303,20 @@ function updateProfileToScumMaster(userName){
 app.post('/api/setProfile',function(req,res){
     let user = req.body.user;
     updateProfileToScumMaster(user);
-    res.end("yes");
-    synchronizeUser();
+    synchronizeUser(res);
 });
 
 // ------- RetroSpective ---------
 
-function synchronizeRetroSpective(_teamId){
+function synchronizeRetroSpective(_teamId,res){
     connections.Retrospective.findAll({ where: {
         teamId: _teamId
     }}).then(_retro => {
         allRetroSpective = JSON.stringify(_retro, null, 4)
         console.log(chalk.green("RetroSpective table synchronazition done!"));
-        console.log(chalk.red(user.team));
-    }); 
+    }).then(() => {
+        res.send(allRetroSpective);
+      });
 }
 
 function createNewRetroComment(_description, _roomName, _evaluation , _date,  _team){
@@ -328,22 +331,22 @@ function createNewRetroComment(_description, _roomName, _evaluation , _date,  _t
 }
 
 app.get("/retrospective/:teamId", (req, res) => {
-    synchronizeRetroSpective(req.params.teamId);
+    synchronizeRetroSpective(req.params.teamId,res);
     console.log(chalk.green("getting retrospectives!"));
-    res.send(allRetroSpective);
 });
 
 app.post('/api/createRetroSpective',function(req,res){
     let retrospective = new connections.Retrospective({ 
-        date: req.body.date,
+        date: Sequelize.literal('CURRENT_TIMESTAMP'),
         roomName: req.body.roomName
     });
     getTeam(req.body.team).then(_team =>{
         retrospective.teamId = _team.id;
     }).then(response => {
         retrospective.save();
-    });
-    // synchronizeRetroSpective();
+    }).then(() => {
+        res.end("yes");;
+      });
 });
 
 app.post('/api/createIssue',function(req,res){
@@ -379,39 +382,38 @@ const getTeam = team => {
 
 // -------- NicoNico ----------
 
-app.get("/api/niconicosss/", (req, res) => {
-    console.log(chalk.yellow("IDE MOST BELEEMNTEM"));
-    const Op = Sequelize.Op;
-    let niconicos = {};
-    let dbQuery = {};
-    if(req.query.startDate !== "null"){
-        dbQuery["date"] = {
-            [Op.between] : [req.query.startDate, req.query.endDate]
-        }
-    }
-    console.log(chalk.green(JSON.stringify(dbQuery)));
-    console.log(chalk.green(JSON.stringify(req.query)));
-    connections.NicoNico.findAll(
-        {
-            include: [
-                {model: connections.User,
-                    where: {
-                        teamId: req.query.teamId
-                }
-            }
-        ]
-        },{
-            where: dbQuery,
-        }   
+// Ez kurvára nem kell
+// app.get("/api/niconicosss/", (req, res) => {
+//     console.log(chalk.yellow("IDE MOST BELEEMNTEM"));
+//     const Op = Sequelize.Op;
+//     let niconicos = {};
+//     let dbQuery = {};
+//     if(req.query.startDate !== "null"){
+//         dbQuery["date"] = {
+//             [Op.between] : [req.query.startDate, req.query.endDate]
+//         }
+//     }
+//     connections.NicoNico.findAll(
+//         {
+//             include: [
+//                 {model: connections.User,
+//                     where: {
+//                         teamId: req.query.teamId
+//                 }
+//             }
+//         ]
+//         },{
+//             where: dbQuery,
+//         }   
     
-    ).then(_issues => {
-        console.log("meg lettem hivaaaaaa");
-        niconicos = JSON.stringify(_issues, null, 4)
-    }).then(response => {
-        res.send(niconicos);
-        console.log(chalk.red(niconicos));
-    });
-});
+//     ).then(_issues => {
+//         console.log("meg lettem hivaaaaaa");
+//         niconicos = JSON.stringify(_issues, null, 4)
+//     }).then(response => {
+//         res.send(niconicos);
+//         console.log(chalk.red(niconicos));
+//     });
+// });
 
 
 function getNicoNicos(res){
@@ -444,25 +446,24 @@ function getTeamMembersByteamId(_teamId){
         teamId: _teamId
     }}).then(_members => {
         teamMembers = JSON.stringify(_members, null, 4);
-    });
+    }).then(() => {
+        res.send(teamMembers);
+      });
 }
 
 app.get("/api/niconicos/users/:teamId", (req, res) => {
-    getTeamMembersByteamId(req.params.teamId);
-    res.send(teamMembers);
+    getTeamMembersByteamId(req.params.teamId,res);
 });
 
 app.post('/api/addNicoNico',function(req,res){
     let userId=req.body.userId;
-    let date=req.body.date;
     let value=req.body.value;
-    createNewNicoNico(userId,date,value);
-    res.end("yes");
+    createNewNicoNico(userId,value, res);
 });
 
-function createNewNicoNico(_userId, _date,  _value){
+function createNewNicoNico(_userId, _value, res){
     connections.NicoNico.create({  
-        date: _date,
+        date: Sequelize.literal('CURRENT_TIMESTAMP'),
         value: String(_value),
         userId: _userId,
  });

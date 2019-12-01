@@ -26,84 +26,82 @@ const useStyles = makeStyles({
   },
 });
 
-function generateTableContent(content, removeIdea, setComplete){
-  return (
-    Object.keys(content).map((key) => (
-      <TableRow key={content[key].name}>
-        <TableCell component="th" scope="row">
-          {content[key].message}
-        </TableCell>
-        <TableCell align="right">
-          {content[key].team}
-        </TableCell>
-        <TableCell>
-            {content[key].date}
-        </TableCell>
-        {generateCompletedButton(content[key].completed, content[key].message, setComplete)}
-        <TableCell align="right">
-          {generateDeleteButton(content[key].message, removeIdea)}
-        </TableCell>
-      </TableRow>
-    ))
-  );
-}
-
-function generateCompletedButton(completed,ideaName, setComplete){
-  return(
-    <TableCell align="right">
-            <Fab color={completed ? "primary" : "secondary"} aria-label="edit" className={useStyles.fab}  onClick={() => completeIdea(ideaName, setComplete) }>
-                {completed ? <CheckIcon /> : <PriorityHighIcon />}
-            </Fab>
-      </TableCell>
-  )
-}
-
-function generateDeleteButton(ideaName, removeIdea){
-  return (
-    <IconButton  className={useStyles.button} aria-label="delete" onClick={() => deleteIdea(ideaName, removeIdea) } >
-      <DeleteIcon />
-    </IconButton>
-  )
-}
-
-function deleteIdea(ideaName, removeIdea) {
-  fetch('/api/deleteidea', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: ideaName,
-    }),
-  }).then((response) => {
-    if(response.status === 200){
-      removeIdea(ideaName);
-      console.log(`${ideaName} idea deleted`);
-    }
-  });
-}
-
-function completeIdea(ideaName, setComplete) {
-  fetch('/api/completeidea', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: ideaName,
-    }),
-  }).then((response) => {
-    if(response.status === 200){
-      setComplete(ideaName);
-      console.log(`${ideaName} idea set to Completed`);
-    }
-  });
-}
-
 export default function IdeaTable(props) {
   const classes = useStyles();
+
+  function generateTableContent(content){
+    return (
+      Object.keys(content).map((key) => (
+        <TableRow key={content[key].name}>
+          <TableCell component="th" scope="row">
+            {content[key].message}
+          </TableCell>
+          <TableCell align="right">
+            {content[key].team}
+          </TableCell>
+          <TableCell>
+              {content[key].date}
+          </TableCell>
+          {generateCompletedButton(content[key].completed, content[key].message)}
+          <TableCell align="right">
+            {generateDeleteButton(content[key].message)}
+          </TableCell>
+        </TableRow>
+      ))
+    );
+  }
+  
+  function generateCompletedButton(completed,ideaName){
+    return(
+      <TableCell align="right">
+              <Fab color={completed ? "primary" : "secondary"} aria-label="edit" className={classes.fab}  onClick={() => completeIdea(ideaName) }>
+                  {completed ? <CheckIcon /> : <PriorityHighIcon />}
+              </Fab>
+        </TableCell>
+    )
+  }
+  
+  function generateDeleteButton(ideaName){
+    return (
+      <IconButton  className={classes.button} aria-label="delete" onClick={() => deleteIdea(ideaName) } >
+        <DeleteIcon />
+      </IconButton>
+    )
+  }
+  
+  function deleteIdea(ideaName) {
+    fetch('/api/deleteidea', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: ideaName,
+      }),
+    }).then((response) => {
+      if(response.status === 200){
+        props.fetchIdeasFromDB();
+      }
+    });
+  }
+  
+  function completeIdea(ideaName) {
+    fetch('/api/completeidea', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: ideaName,
+      }),
+    }).then((response) => {
+      if(response.status === 200){
+        props.fetchIdeasFromDB();
+      }
+    });
+  }
 
   return (
     <Paper className={classes.root}>
@@ -118,7 +116,7 @@ export default function IdeaTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-        {props.ideas !== {} ? generateTableContent(props.ideas, props.removeIdea, props.setComplete) : "" }
+        {props.ideas !== {} ? generateTableContent(props.ideas) : "" }
         </TableBody>
       </Table>  
     </Paper>

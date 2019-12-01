@@ -26,11 +26,10 @@ const useStyles = makeStyles({
 
 export default function NicoNicoTable(props) {
   const classes = useStyles();
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [niconicos, setNicoNicos] = React.useState([]);
 
   useEffect(() => {
-    fetch(`/api/niconicos/?teamId=${props.userData.teamId}&startDate=${props.startDate}&endDate=${props.endDate}`)
+    fetch(`/api/niconicos`)
       .then(response => response.json())
       .then(data => {
           filterNiconicosForTeam(data, props.userData.teamId);

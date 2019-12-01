@@ -11,6 +11,10 @@ export default function IdeaBox() {
     const [ideas, setIdeas] = useState({});
 
     useEffect(() => {
+        fetchIdeasFromDB()
+      }, []);
+
+      function fetchIdeasFromDB(){
         fetch('/idea')
         .then(response => response.json())
         .then(data => {
@@ -19,7 +23,7 @@ export default function IdeaBox() {
         .catch(error => {
             console.log(error)
         })
-      }, []);
+      }
 
       function removeIdea(ideaName) {
         setIdeas(ideas.filter((el) => (el.message !== ideaName)));
@@ -29,25 +33,19 @@ export default function IdeaBox() {
         setIdeas([...ideas, {id: Math.floor(Math.random()*100) ,message: ideaName}]);
       }
 
-      function setComplete(ideaName){
-        console.log("SDDADSA");
-      }
-
-
     return (
         <div className="page">
             <p className="page-title" style={{ textAlign: "center" }}>
                 IdeaBox
             </p>
-            <IdeaInputField addIdea={addIdea} memberOfTeam={userData.team}/>
+            <IdeaInputField fetchIdeasFromDB={fetchIdeasFromDB} memberOfTeam={userData.team}/>
             {_.isEmpty(ideas) ? 
                 <p className="page-title" style={{ textAlign: "center" }}>
                     {text}
                 </p> : 
                 <IdeaTable 
                     ideas={ideas} 
-                    removeIdea={removeIdea}
-                    setComplete={setComplete}
+                    fetchIdeasFromDB={fetchIdeasFromDB}
                 />}
         </div>
     );

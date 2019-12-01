@@ -42,8 +42,6 @@ export default function CompetencyInputField(props) {
       }),
     }).then((response) => {
       if(response.status === 200){
-        // setValues({...values, showMessage: true});
-        // props.addTeam(values.name);
         console.log("Competency added");
       }
     });

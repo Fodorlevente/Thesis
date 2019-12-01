@@ -43,7 +43,7 @@ export default function CreateTeamInputField(props) {
     }).then((response) => {
       if(response.status === 200){
         setValues({...values, showMessage: true});
-        props.addTeam(values.name);
+        props.fetchTeamsFromDB();
       }
     });
   }

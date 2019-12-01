@@ -21,7 +21,7 @@ export default function RetroSelect(props) {
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-simple-select-label">Issue type</InputLabel>
+        <InputLabel id="demo-simple-select-label">Worked well</InputLabel>
         <Select
           id="retro-label-id"
           value={props.issueTpye}

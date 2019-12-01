@@ -40,14 +40,14 @@ export default function RetroCreator(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        date: addDate(),
         team: props.memberOfTeam,
         roomName: values.name,
       }),
     }).then((response) => {
+      console.log(response.status);
       if(response.status === 200){
         setValues({...values, showMessage: true});
-        props.addMessage(values.name,props.label);
+        props.fetchRetroSpectivesPerTeamIdFromDB();
       }
     });
   }
@@ -55,11 +55,6 @@ export default function RetroCreator(props) {
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
-
-  function addDate(){
-    const today = Date.now();
-    return (new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit'}).format(today));
-  }
 
   return (
     <form className={classes.container} noValidate autoComplete="off">

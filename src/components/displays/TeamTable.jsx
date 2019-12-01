@@ -21,85 +21,85 @@ const useStyles = makeStyles({
   },
 });
 
-function generateTableContent(content, memberOfTeam, removeTeam, userName){
-  return (
-    Object.keys(content).map((key) => (
-      <TableRow key={content[key].name}>
-        <TableCell component="th" scope="row">
-          {content[key].name}
-        </TableCell>
-        <TableCell align="right">
-          {generateActionButton(memberOfTeam, content[key].id, userName)}
-        </TableCell>
-        <TableCell align="right">
-          {generateDeleteButton(content[key].id, removeTeam)}
-        </TableCell>
-      </TableRow>
-    ))
-  );
-}
 
-function generateActionButton(memberOfTeam, actualId, userName){
-  return (
-      <Button
-        variant="contained"
-        color={memberOfTeam === actualId ? "primary" : "secondary" }
-        size="large"
-        className={useStyles.button}
-        onClick={() => joinTeam(actualId, userName) }
-      >
-        {memberOfTeam == actualId ? "Leave" : "Join" }
-      </Button>
-  )
-}
-
-function generateDeleteButton(actualId, removeTeam){
-  return (
-    <IconButton  className={useStyles.button} aria-label="delete" onClick={() => deleteTeam(actualId, removeTeam) } >
-      <DeleteIcon />
-    </IconButton>
-  )
-}
-
-function deleteTeam(actualId, removeTeam) {
-  fetch('/api/deleteteam', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      id: actualId,
-    }),
-  }).then((response) => {
-    if(response.status === 200){
-      removeTeam(actualId);
-      console.log(`${actualId} deleted`);
-    }
-  });
-}
-
-function joinTeam(actualId, userName) {
-  fetch('/api/jointeam', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: userName,
-      teamId: actualId,
-    }),
-  }).then((response) => {
-    if(response.status === 200){
-      // removeTeam(teamName);
-      console.log(`${userName} joined ${actualId} `);
-    }
-  });
-}
 
 export default function TeamTable(props) {
   const classes = useStyles();
+
+  function generateTableContent(content, memberOfTeam, userName){
+    return (
+      Object.keys(content).map((key) => (
+        <TableRow key={content[key].name}>
+          <TableCell component="th" scope="row">
+            {content[key].name}
+          </TableCell>
+          <TableCell align="right">
+            {generateActionButton(memberOfTeam, content[key].id, userName)}
+          </TableCell>
+          <TableCell align="right">
+            {generateDeleteButton(content[key].id)}
+          </TableCell>
+        </TableRow>
+      ))
+    );
+  }
+  
+  function generateActionButton(memberOfTeam, actualId, userName){
+    return (
+        <Button
+          variant="contained"
+          color={memberOfTeam === actualId ? "primary" : "secondary" }
+          size="large"
+          className={useStyles.button}
+          onClick={() => joinTeam(actualId, userName) }
+        >
+          {memberOfTeam == actualId ? "Leave" : "Join" }
+        </Button>
+    )
+  }
+  
+  function generateDeleteButton(actualId){
+    return (
+      <IconButton  className={useStyles.button} aria-label="delete" onClick={() => deleteTeam(actualId) } >
+        <DeleteIcon />
+      </IconButton>
+    )
+  }
+  
+  function deleteTeam(actualId) {
+    fetch('/api/deleteteam', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: actualId,
+      }),
+    }).then((response) => {
+      if(response.status === 200){
+        props.fetchTeamsFromDB();
+      }
+    });
+  }
+  
+  function joinTeam(actualId, userName) {
+    fetch('/api/jointeam', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: userName,
+        teamId: actualId,
+      }),
+    }).then((response) => {
+      if(response.status === 200){
+        console.log(`${userName} joined ${actualId} `);
+      }
+    });
+  }
 
   return (
     <Paper className={classes.root}>
@@ -112,7 +112,7 @@ export default function TeamTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-        {props.teams !== {} ? generateTableContent(props.teams, props.memberOfTeam, props.removeTeam, props.userName) : "" }
+        {props.teams !== {} ? generateTableContent(props.teams, props.memberOfTeam, props.userName) : "" }
         </TableBody>
       </Table>  
     </Paper>
