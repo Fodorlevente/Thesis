@@ -17,8 +17,6 @@ export default function RadarChart(props) {
         datasets: userCompetency,
     };
 
-   
-
     useEffect(() => {
       fetch(`/api/usercompetency/${props.teamId}`)
         .then(response => response.json())

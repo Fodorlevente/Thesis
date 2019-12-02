@@ -25,13 +25,13 @@ export default function IdeaBox() {
         })
       }
 
-      function removeIdea(ideaName) {
-        setIdeas(ideas.filter((el) => (el.message !== ideaName)));
-      }
+    //   function removeIdea(ideaName) {
+    //     setIdeas(ideas.filter((el) => (el.message !== ideaName)));
+    //   }
 
-      function addIdea(ideaName){
-        setIdeas([...ideas, {id: Math.floor(Math.random()*100) ,message: ideaName}]);
-      }
+    //   function addIdea(ideaName){
+    //     setIdeas([...ideas, {id: Math.floor(Math.random()*100) ,message: ideaName}]);
+    //   }
 
     return (
         <div className="page">
