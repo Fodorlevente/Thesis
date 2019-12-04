@@ -317,17 +317,6 @@ function synchronizeRetroSpective(_teamId,res){
       });
 }
 
-function createNewRetroComment(_description, _roomName, _evaluation , _date,  _team){
-    connections.Retrospective.findOrCreate({ where: { 
-        description: _description,
-        date: _date,
-        team: _team,
-        evaluation: _evaluation,
-        roomName: _roomName
-    }
- });
-}
-
 app.get("/retrospective/:teamId", (req, res) => {
     synchronizeRetroSpective(req.params.teamId,res);
     console.log(chalk.green("getting retrospectives!"));
@@ -377,42 +366,6 @@ const getTeam = team => {
         return response;
     });
 };
-
-// -------- NicoNico ----------
-
-// Ez kurvára nem kell
-// app.get("/api/niconicosss/", (req, res) => {
-//     console.log(chalk.yellow("IDE MOST BELEEMNTEM"));
-//     const Op = Sequelize.Op;
-//     let niconicos = {};
-//     let dbQuery = {};
-//     if(req.query.startDate !== "null"){
-//         dbQuery["date"] = {
-//             [Op.between] : [req.query.startDate, req.query.endDate]
-//         }
-//     }
-//     connections.NicoNico.findAll(
-//         {
-//             include: [
-//                 {model: connections.User,
-//                     where: {
-//                         teamId: req.query.teamId
-//                 }
-//             }
-//         ]
-//         },{
-//             where: dbQuery,
-//         }   
-    
-//     ).then(_issues => {
-//         console.log("meg lettem hivaaaaaa");
-//         niconicos = JSON.stringify(_issues, null, 4)
-//     }).then(response => {
-//         res.send(niconicos);
-//         console.log(chalk.red(niconicos));
-//     });
-// });
-
 
 function getNicoNicos(res){
     let rawUsersWithNicos = {};

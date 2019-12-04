@@ -76,21 +76,6 @@ Competency.init({
         modelName: keys.MODEL.competency
     });
 
-// class TeamCompetency extends Model { }
-// TeamCompetency.init({
-//     teamId: {
-//         type: Sequelize.INTEGER,
-//         allowNull: false,
-//     },
-//     competencyId: {
-//         type: Sequelize.INTEGER,
-//         allowNull: false,
-//     },
-//     }, {
-//         sequelize,
-//         modelName: 'TeamCompetency'
-// }); 
-
 class UserCompetency extends Model { }
 UserCompetency.init({
     value: {
@@ -228,11 +213,8 @@ module.exports = {
     NicoNico,
     Retrospective,
     Idea,
-    // IdeaBox,
     Message,
     Issue,
-    // MessageBoard,
-    // TeamCompetency,
     UserCompetency,
     Competency,
     Team,
