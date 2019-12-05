@@ -31,7 +31,7 @@ function getSteps() {
 function getStepContent(step) {
   switch (step) {
     case 0:
-        return `In this section you can check the datas of your profile, and you can set you as a Scrum Master of a team, if you are a member of one.`;
+        return `In this section you can check your data based on your profile, and you can set you as a Scrum Master of a team, if you are a member of one.`;
     case 1:
         return 'You can create a team easily. Join or leave the team what you selected.';
     case 2:
