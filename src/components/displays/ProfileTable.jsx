@@ -29,8 +29,13 @@ export default function ProfileTable(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: userData.name
+        userId: userData.id
       }),
+    }).then((response) => {
+      if(response.status === 200){
+        // fetch('/user');
+        console.log("valahogy triggerelni kéne a providert...");
+      }
     })
   }
 
@@ -52,7 +57,7 @@ export default function ProfileTable(props) {
         {key}
       </Typography>
       <Typography component="div" color="textSecondary">
-        {userData[key] === "Developer" && userData.team !== "" ? generateSetScrumMasterButton(userData[key], userData.team) : userData[key]}
+        {userData[key] === "Developer" && userData.teamId !== null ? generateSetScrumMasterButton(userData[key], userData.team) : userData[key]}
       </Typography>
     </Paper>
     ))

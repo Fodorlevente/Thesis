@@ -6,13 +6,21 @@ const UserProvider = ({ children }) => {
     const [user, setUser] = useState({});
 
     useEffect( () => {
+        fetchUserDataFromDB()
+    }, [])
+
+    function alma(){
+        console.log("dsdadsadaddddsadsasa");
+    }
+
+    function fetchUserDataFromDB(){
         fetch("/user")
             .then( res => res.json())
             .then(res => setUser(res))
             .catch( err => {
                 console.log(err);
             });
-    },/*deps:*/ [])
+    }
     return (
         <context.Provider value={user}>
             {children}
@@ -23,5 +31,4 @@ const UserProvider = ({ children }) => {
 
 UserProvider.context = context;
 
-// Exports data from API endpoint
 export default UserProvider;

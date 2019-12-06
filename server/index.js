@@ -39,9 +39,6 @@ passport.use(new GoogleStrategy({
             name: profile.displayName,
             profilePicture: profile.photos[0].value,
         } }).then(([registeredUser, created]) => {
-            console.log(registeredUser.get({
-                plain: true
-              }))
             user = registeredUser.get({ plain: true });
             if(user.teamId !== null){
                 getTeamNameForUserContext();
@@ -68,6 +65,7 @@ app.get("/auth/google/callback",
 
 app.get("/user", (req, res) => {
     console.log("getting user data!");
+    // synchronizeUser(user.id,res);
     res.send(user);
 });
 
@@ -81,7 +79,6 @@ app.post('/api/team',function(req,res){
     var newTeamName=req.body.name;
     console.log(chalk.yellow("New Team name: = " + newTeamName));
     createNewTeam(newTeamName, res);
-    // res.end("yes");
 });
 
 app.get("/api/teamCompetencies/:teamId", (req, res) => {
@@ -134,6 +131,11 @@ app.post('/api/jointeam',function(req,res){
     res.end("yes");
 });
 
+app.post('/api/leaveteam',function(req,res){
+    var userId = req.body.userId;
+    leaveTeam(userId,res);
+});
+
 function createNewTeam(teamName, res){
     connections.Team.findOrCreate({ where: { 
         name: teamName
@@ -167,6 +169,19 @@ function joinToTeam(teamId, userName){
         console.log(`${userName} joined ${teamId} successfully`);
       });
 }
+
+function leaveTeam(userId, res){
+    connections.User.update({ teamId: null, rank: "Developer" }, {
+        where: {
+            id: userId
+        }
+      }).then(() => {
+        console.log(`${userId} user has left a team`);
+        synchronizeTeams(res);
+      });
+}
+
+//-------------------------- Idea -------------------------------------
 
 function synchronizeIdeas(res){
     connections.Idea.findAll().then(ideas => {
@@ -279,29 +294,41 @@ function createNewMessage(_message, _user, _date,  _team){
 
 // ------- Profile / User ---------
 
-function synchronizeUser(res){
-    connections.User.findAll().then(_user => {
-        user = JSON.stringify(_user, null, 4)
-        console.log(chalk.green("User table synchronazition done!"));
-    }).then(() => {
-        res.send(user);
-      });
+function synchronizeUser(userId,res){
+    // connections.User.findAll().then(_user => {
+    //     user = JSON.stringify(_user, null, 4)
+    //     console.log(chalk.green("User table synchronazition done!"));
+    //     console.log(chalk.red(user));
+    // }).then(() => {
+    //     res.send(user);
+    //   });
+    connections.User.findOne({where: 
+        {id: userId}
+    }).then(_user =>{
+        user = JSON.stringify(_user)
+    }).then(response=>{
+        app.get("/user", (req, res) => {
+            console.log("getting user data from synchronizeUser!");
+            // synchronizeUser(user.id,res);
+            res.send(user);
+        });
+    })
+    console.log(chalk.red(JSON.stringify(user)));
 }
 
-function updateProfileToScumMaster(userName){
+function updateProfileToScumMaster(userId,res){
     connections.User.update({ rank: "Scrum Master"}, {
         where: {
-            name: userName
+            id: userId
         }
       }).then(() => {
-        console.log(`${userName} set to Scrum Master successfully`);
+        synchronizeUser(userId,res);
       });
 }
 
 app.post('/api/setProfile',function(req,res){
-    let user = req.body.user;
-    updateProfileToScumMaster(user);
-    synchronizeUser(res);
+    let userId = req.body.userId;
+    updateProfileToScumMaster(userId,res);
 });
 
 // ------- RetroSpective ---------

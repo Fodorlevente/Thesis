@@ -72,7 +72,7 @@ export default function TeamTable(props) {
     );
   }
 
-  function generateTableContent(content, memberOfTeam, userName){
+  function generateTableContent(content, memberOfTeam, userName, userId){
     return (
       Object.keys(content).map((key) => (
         <TableRow key={content[key].name}>
@@ -80,7 +80,7 @@ export default function TeamTable(props) {
             {content[key].name}
           </TableCell>
           <TableCell align="right">
-            {generateActionButton(memberOfTeam, content[key].id, userName)}
+            {generateActionButton(memberOfTeam, content[key].id, userName, userId)}
           </TableCell>
           <TableCell align="right">
             {generateDeleteButton(content[key].name, content[key].id)}
@@ -90,14 +90,14 @@ export default function TeamTable(props) {
     );
   }
   
-  function generateActionButton(memberOfTeam, actualId, userName){
+  function generateActionButton(memberOfTeam, actualId, userName, userId){
     return (
         <Button
           variant="contained"
           color={memberOfTeam === actualId ? "primary" : "secondary" }
           size="large"
           className={useStyles.button}
-          onClick={() => joinTeam(actualId, userName) }
+          onClick={() => {memberOfTeam == actualId ? leaveTeam(userId) : joinTeam(actualId, userName) } }
         >
           {memberOfTeam == actualId ? "Leave" : "Join" }
         </Button>
@@ -142,7 +142,24 @@ export default function TeamTable(props) {
       }),
     }).then((response) => {
       if(response.status === 200){
-        console.log(`${userName} joined ${actualId} `);
+        props.fetchTeamsFromDB();
+      }
+    });
+  }
+
+  function leaveTeam(_userId) {
+    fetch('/api/leaveteam', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: _userId,
+      }),
+    }).then((response) => {
+      if(response.status === 200){
+        props.fetchTeamsFromDB();
       }
     });
   }
@@ -158,7 +175,7 @@ export default function TeamTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-        {props.teams !== {} ? generateTableContent(props.teams, props.memberOfTeam, props.userName) : "" }
+        {props.teams !== {} ? generateTableContent(props.teams, props.memberOfTeam, props.userName, props.userId) : "" }
         </TableBody>
       </Table>
       {deleteItem !== null ? addAlertDeleteDialog() : ""}

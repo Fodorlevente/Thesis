@@ -41,6 +41,7 @@ export default function Team() {
                     memberOfTeam={userData.teamId} 
                     fetchTeamsFromDB={fetchTeamsFromDB}
                     userName={userData.name}
+                    userId={userData.id}
                 />}
         </div>
     );

@@ -134,7 +134,11 @@ export default function RetroSpectives() {
       </p>
       {_.isEmpty(activeRetro) ? 
       <div>
-      <RetroCreator memberOfTeam={userData.team} fetchRetroSpectivesPerTeamIdFromDB={fetchRetroSpectivesPerTeamIdFromDB}/>
+        {
+          userData.rank === "Scrum Master" ?
+          <RetroCreator memberOfTeam={userData.team} fetchRetroSpectivesPerTeamIdFromDB={fetchRetroSpectivesPerTeamIdFromDB}/>
+          : ""
+        }
       <Grid container justify="center" > 
         {generateListOfRooms()}
       </Grid> 
