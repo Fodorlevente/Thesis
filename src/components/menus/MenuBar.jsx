@@ -69,6 +69,10 @@ const MenuBar = (props) => {
             !_.isEmpty(userData) &&
                 menuItems.map((value, index) => {
                     return (
+                        
+                    userData.teamId === null && (value.title === "Metrics" || value.title === "Retrospective" || value.title === "Message Board")  ?
+                        ""
+                        : 
                         <Link className="btn menu-btn" to={value.path} title={value.title} key={index}>
                             {value.icon}
                         </Link>
