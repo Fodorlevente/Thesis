@@ -42,6 +42,7 @@ export default function Team() {
                     fetchTeamsFromDB={fetchTeamsFromDB}
                     userName={userData.name}
                     userId={userData.id}
+                    rank={userData.rank}
                 />}
         </div>
     );

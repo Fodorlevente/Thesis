@@ -295,24 +295,11 @@ function createNewMessage(_message, _user, _date,  _team){
 // ------- Profile / User ---------
 
 function synchronizeUser(userId,res){
-    // connections.User.findAll().then(_user => {
-    //     user = JSON.stringify(_user, null, 4)
-    //     console.log(chalk.green("User table synchronazition done!"));
-    //     console.log(chalk.red(user));
-    // }).then(() => {
-    //     res.send(user);
-    //   });
     connections.User.findOne({where: 
         {id: userId}
     }).then(_user =>{
         user = JSON.stringify(_user)
-    }).then(response=>{
-        app.get("/user", (req, res) => {
-            console.log("getting user data from synchronizeUser!");
-            // synchronizeUser(user.id,res);
-            res.send(user);
-        });
-    })
+    });
     console.log(chalk.red(JSON.stringify(user)));
 }
 

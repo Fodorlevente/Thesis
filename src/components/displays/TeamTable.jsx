@@ -106,9 +106,12 @@ export default function TeamTable(props) {
 
   function generateDeleteButton(teamName ,actualId){
     return (
-      <IconButton  className={useStyles.button} aria-label="delete" onClick={() => handleClickOpen(teamName ,actualId)} >  
-        <DeleteIcon />
-      </IconButton>
+      actualId === props.memberOfTeam && props.rank === "Scrum Master" ?
+        <IconButton  className={useStyles.button} aria-label="delete" onClick={() => handleClickOpen(teamName ,actualId)} >  
+          <DeleteIcon />
+        </IconButton>
+        :
+        ""
     )
   }
   

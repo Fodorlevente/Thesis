@@ -17,6 +17,7 @@ const Profile = () => {
                 {text}
             </p>
             <ProfileTable userData={userData} />
+            {console.dir(UserProvider)}
             <div style={{ marginBottom: 20 }} />
         </div>
     );

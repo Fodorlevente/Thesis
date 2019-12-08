@@ -9,11 +9,12 @@ const UserProvider = ({ children }) => {
         fetchUserDataFromDB()
     }, [])
 
-    function alma(){
-        console.log("dsdadsadaddddsadsasa");
+    function bazdmeg(){
+        console.log("bazdmegTe");
     }
 
     function fetchUserDataFromDB(){
+        console.log("MEG LETTEM HÍVVA!!!")
         fetch("/user")
             .then( res => res.json())
             .then(res => setUser(res))
@@ -22,7 +23,7 @@ const UserProvider = ({ children }) => {
             });
     }
     return (
-        <context.Provider value={user}>
+        <context.Provider value={user} bazdmeg={bazdmeg}>
             {children}
         </context.Provider>
     );

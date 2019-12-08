@@ -19,8 +19,7 @@ const useStyles = makeStyles(theme => ({
 export default function ProfileTable(props) {
   const classes = useStyles();
   const userData = props.userData;
-
-  // Ide id is kéne mert ez így nem a legjobb....
+  
   function setScrumMaster() {
     fetch('/api/setProfile', {
       method: 'POST',
@@ -33,7 +32,6 @@ export default function ProfileTable(props) {
       }),
     }).then((response) => {
       if(response.status === 200){
-        // fetch('/user');
         console.log("valahogy triggerelni kéne a providert...");
       }
     })
@@ -54,7 +52,7 @@ export default function ProfileTable(props) {
     Object.keys(userData).map((key) => (
     <Paper className={classes.root} key={key}>
       <Typography component="p" color="primary">
-        {key}
+        {key} 
       </Typography>
       <Typography component="div" color="textSecondary">
         {userData[key] === "Developer" && userData.teamId !== null ? generateSetScrumMasterButton(userData[key], userData.team) : userData[key]}
