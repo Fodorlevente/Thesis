@@ -181,7 +181,7 @@ INSERT INTO `teams` VALUES
 (1,'DevOps'),
 (2,'Validation'),
 (3,'FullStack Dev Team'),
-(4,'Embeeded C Devs');
+(4,'Embedded C Devs');
 UNLOCK TABLES;
 
 
