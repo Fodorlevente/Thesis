@@ -21,9 +21,10 @@ INSERT INTO `competencies` VALUES
 (4,'React'),
 (5,'Ruby on Rails'),
 (6, 'Java'),
-(6, 'PHP');
+(7, 'PHP');
+(8,'Jenkins');
+(9, 'Azure');
 UNLOCK TABLES;
-
 
 DROP TABLE IF EXISTS `ideas`;
 CREATE TABLE `ideas` (
@@ -37,10 +38,12 @@ CREATE TABLE `ideas` (
 
 LOCK TABLES `ideas` WRITE;
 INSERT INTO `ideas` VALUES 
-(1,'DevOps','2019-12-03 21:41:06','We should use Kubernetes instead of Docker',0),
+(1,'DevOps','2019-12-03 21:41:06','We should use Kubernetes',0),
 (2,'Validation','2019-12-03 21:42:06',' Take time to implement own ideas',1),
 (3,'DevOps','2019-12-03 21:42:32','Rewrite Onboarding documents',0),
 (4,'DevOps','2019-12-03 21:42:56','The Project should use Pandas for data mining',1);
+(5,'Security Operations','2019-12-03 21:42:56','We should build SOC',1);
+(6,'Data Miners','2019-12-03 21:42:56','Do not store datas in excel files.',1);
 UNLOCK TABLES;
 
 
@@ -64,12 +67,12 @@ INSERT INTO `issues` VALUES
 (3,0,'Code quality','To be improved',1),
 (4,0,'More pair programming','To be improved',1),
 (5,0,'More pair programming','Want to do in next sprint',1),
-(6,0,'Anita','Worked well',5),
-(7,0,'Levente','To be improved',5),
-(8,0,'More Anita','Want to do in next sprint',5),
-(9,0,'daasdasds','Worked well',5),
-(10,0,'daasdasdsddd','To be improved',5),
-(11,0,'daasdasdsddd','Want to do in next sprint',5),
+(6,0,'Anita','Worked well',2),
+(7,0,'Levente','To be improved',2),
+(8,0,'More Anita','Want to do in next sprint',2),
+(9,0,'daasdasds','Worked well',2),
+(10,0,'daasdasdsddd','To be improved',2),
+(11,0,'daasdasdsddd','Want to do in next sprint',2),
 (12,0,'Scrum trainings','Want to do in next sprint',1),
 (13,0,'Refactoring existing tools written in python 2','Want to do in next sprint',1);
 UNLOCK TABLES;
@@ -89,13 +92,13 @@ LOCK TABLES `messages` WRITE;
 INSERT INTO `messages` VALUES 
 (1,'Levente Fodor','Hello!','2019-11-14 23:00:00','DevOps'),
 (2,'Levente Fodor','Whats up team? ','2019-11-14 23:00:00','DevOps'),
-(3,'Szam Anita','Alma van a fa alatt','2019-10-10 00:00:00','DevOps'),
-(4,'Szam Anita2','Alma van a fa adsadadsadaslatt','2019-10-10 00:00:00','Validation'),
-(5,'Frici','Frigyes','2019-10-10 00:00:00','DevOps'),
-(6,'Csaj','Kiállok nőtársaim mellett','2019-10-10 00:00:00','NemATeDolgod'),
-(7,'Anita Szam','Can sombody help me?','2019-11-18 23:00:00','DevOps'),
-(8,'Levente Fodor','Anita is AWESOME!!!!!! ','2019-11-29 23:00:00','DevOps'),
-(9,'Anita Szam','tHANKS bRO LuL','2019-11-29 23:00:00','DevOps');
+(3,'Chyna Greenfelder','I have a problem with accessing NPM repos. Can somebody help me?','2019-10-10 00:00:00','DevOps'),
+(4,'Liana Wiegand','I love my team!','2019-10-10 00:00:00','Validation'),
+(5,'Presley Ondricka','I think the corporate proxy is the root of your problem.','2019-10-10 00:00:00','DevOps'),
+(6,'Liana Wiegand','I feel the same!','2019-10-10 00:00:00','Validation'),
+(7,'Chyna Greenfelder','Thanks, I hope it will work.','2019-11-18 23:00:00','DevOps'),
+(8,'Levente Fodor','Is the problem fixed?','2019-11-29 23:00:00','DevOps'),
+(9,'Chyna Greenfelder','Yes! :)','2019-11-29 23:00:00','DevOps');
 UNLOCK TABLES;
 
 
@@ -112,15 +115,21 @@ CREATE TABLE `niconicos` (
 
 LOCK TABLES `niconicos` WRITE;
 INSERT INTO `niconicos` VALUES 
-(1,'1','2019-11-30 23:50:43',1),
-(2,'5','2019-11-30 23:50:44',1),
-(3,'3','2019-11-30 23:50:45',1),
-(4,'1','2019-11-30 23:52:35',2),
-(5,'5','2019-11-30 23:52:35',2),
-(6,'3','2019-11-30 23:52:36',2),
-(7,'1','2019-11-30 23:52:44',1);
+(1,'1','2019-11-29 23:50:43',1),
+(2,'5','2019-11-29 23:50:44',3),
+(3,'3','2019-11-29 23:50:45',5),
+(4,'1','2019-11-29 23:52:35',7),
+(5,'5','2019-11-29 23:52:35',8),
+(6,'3','2019-11-29 23:52:36',9),
+(1,'5','2019-11-30 23:50:43',1),
+(2,'1','2019-11-30 23:50:44',3),
+(3,'5','2019-11-30 23:50:45',5),
+(4,'3','2019-11-30 23:52:35',7),
+(5,'3','2019-11-30 23:52:35',8),
+(6,'1','2019-11-30 23:52:36',9),
 UNLOCK TABLES;
 
+1,3,5,7,8,9
 
 DROP TABLE IF EXISTS `retrospectives`;
 CREATE TABLE `retrospectives` (
@@ -165,6 +174,8 @@ INSERT INTO `teamcompetency` VALUES
 (1,2),
 (1,3),
 (1,4);
+(1,6);
+(1,7);
 UNLOCK TABLES;
 
 
@@ -182,6 +193,8 @@ INSERT INTO `teams` VALUES
 (2,'Validation'),
 (3,'FullStack Dev Team'),
 (4,'Embedded C Devs');
+(5,'Security Operations'); 
+(6,'Data Miners');
 UNLOCK TABLES;
 
 
@@ -204,12 +217,32 @@ INSERT INTO `usercompetencies` VALUES
 (1,70,1,1),
 (2,30,1,2),
 (3,80,1,3),
-(4,70,2,2),
-(5,20,2,3),
+(4,70,3,2),
+(5,20,3,3),
 (6,20,1,4);
+(7,10,5,1);
+(8,20,5,2);
+(9,30,5,3);
+(10,40,5,4);
+(7,20,7,1);
+(8,10,7,2);
+(9,40,7,3);
+(10,30,7,4);
+(7,10,8,1);
+(8,90,8,2);
+(9,50,8,3);
+(10,60,8,4);
+(7,90,9,1);
+(8,40,9,2);
+(9,80,9,3);
+(10,10,9,4)
+(10,50,9,6);
+(10,10,9,7);
+(10,30,1,6);
+(10,40,1,7);
+(10,10,5,6);
+(10,10,5,7);
 UNLOCK TABLES;
-
-
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -228,14 +261,14 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES 
 (1,'Levente Fodor','https://lh3.googleusercontent.com/a-/AAuE7mAyawR4RaQGS1IO_WC6aB4HjvoAmiSUuRRfiupzEQ','levilevi183@gmail.com','Scrum Master',1),
-(3,'Liana Wiegand','https://s3.amazonaws.com/uifaces/faces/twitter/jacobbennett/128.jpg','Liana10@hotmail.com','Developer',2),
-(4,'Chyna Greenfelder','https://s3.amazonaws.com/uifaces/faces/twitter/pechkinator/128.jpg','Shana44@gmail.com','Developer',1),
-(5,'Stone Kris','https://s3.amazonaws.com/uifaces/faces/twitter/lingeswaran/128.jpg','Cindy.Shanahan@yahoo.com','Developer',2),
-(6,'Alfonzo Kulas','https://s3.amazonaws.com/uifaces/faces/twitter/bigmancho/128.jpg','Juana_Lemke@hotmail.com','Developer',1),
-(7,'Devyn Powlowski','https://s3.amazonaws.com/uifaces/faces/twitter/uxalex/128.jpg','Joesph.Murray@hotmail.com','Developer',3),
-(8,'Presley Ondricka','https://s3.amazonaws.com/uifaces/faces/twitter/arashmanteghi/128.jpg','Carmel47@yahoo.com','Developer',1),
-(9,'Noelia Fadel','https://s3.amazonaws.com/uifaces/faces/twitter/michzen/128.jpg','Efrain.Fisher@yahoo.com','Developer',1),
-(10,'Flavie Conn','https://s3.amazonaws.com/uifaces/faces/twitter/jacobbennett/128.jpg','Mara70@hotmail.com','Developer',1),
+(2,'Liana Wiegand','https://s3.amazonaws.com/uifaces/faces/twitter/jacobbennett/128.jpg','Liana10@hotmail.com','Developer',2),
+(3,'Chyna Greenfelder','https://s3.amazonaws.com/uifaces/faces/twitter/pechkinator/128.jpg','Shana44@gmail.com','Developer',1),
+(4,'Stone Kris','https://s3.amazonaws.com/uifaces/faces/twitter/lingeswaran/128.jpg','Cindy.Shanahan@yahoo.com','Developer',2),
+(5,'Alfonzo Kulas','https://s3.amazonaws.com/uifaces/faces/twitter/bigmancho/128.jpg','Juana_Lemke@hotmail.com','Developer',1),
+(6,'Devyn Powlowski','https://s3.amazonaws.com/uifaces/faces/twitter/uxalex/128.jpg','Joesph.Murray@hotmail.com','Developer',3),
+(7,'Presley Ondricka','https://s3.amazonaws.com/uifaces/faces/twitter/arashmanteghi/128.jpg','Carmel47@yahoo.com','Developer',1),
+(8,'Noelia Fadel','https://s3.amazonaws.com/uifaces/faces/twitter/michzen/128.jpg','Efrain.Fisher@yahoo.com','Developer',1),
+(9,'Flavie Conn','https://s3.amazonaws.com/uifaces/faces/twitter/jacobbennett/128.jpg','Mara70@hotmail.com','Developer',1),
 UNLOCK TABLES;
 
-
+-- 1,3,5,7,8,9
