@@ -67,12 +67,12 @@ INSERT INTO `issues` VALUES
 (3,0,'Code quality','To be improved',1),
 (4,0,'More pair programming','To be improved',1),
 (5,0,'More pair programming','Want to do in next sprint',1),
-(6,0,'Anita','Worked well',2),
-(7,0,'Levente','To be improved',2),
-(8,0,'More Anita','Want to do in next sprint',2),
-(9,0,'daasdasds','Worked well',2),
-(10,0,'daasdasdsddd','To be improved',2),
-(11,0,'daasdasdsddd','Want to do in next sprint',2),
+(6,0,'Integrate CI/CD pipelines','Worked well',2),
+(7,0,'Test plans','To be improved',2),
+(8,0,'Scrum training','Want to do in next sprint',2),
+(9,0,'SW Demo','Worked well',2),
+(10,0,'Code quality','To be improved',2),
+(11,0,'Pair Programming','Want to do in next sprint',2),
 (12,0,'Scrum trainings','Want to do in next sprint',1),
 (13,0,'Refactoring existing tools written in python 2','Want to do in next sprint',1);
 UNLOCK TABLES;
