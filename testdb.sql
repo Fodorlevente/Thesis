@@ -21,8 +21,8 @@ INSERT INTO `competencies` VALUES
 (4,'React'),
 (5,'Ruby on Rails'),
 (6, 'Java'),
-(7, 'PHP');
-(8,'Jenkins');
+(7, 'PHP'),
+(8,'Jenkins'),
 (9, 'Azure');
 UNLOCK TABLES;
 
@@ -41,9 +41,54 @@ INSERT INTO `ideas` VALUES
 (1,'DevOps','2019-12-03 21:41:06','We should use Kubernetes',0),
 (2,'Validation','2019-12-03 21:42:06',' Take time to implement own ideas',1),
 (3,'DevOps','2019-12-03 21:42:32','Rewrite Onboarding documents',0),
-(4,'DevOps','2019-12-03 21:42:56','The Project should use Pandas for data mining',1);
-(5,'Security Operations','2019-12-03 21:42:56','We should build SOC',1);
+(4,'DevOps','2019-12-03 21:42:56','The Project should use Pandas for data mining',1),
+(5,'Security Operations','2019-12-03 21:42:56','We should build SOC',1),
 (6,'Data Miners','2019-12-03 21:42:56','Do not store datas in excel files.',1);
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `teams`;
+CREATE TABLE `teams` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+LOCK TABLES `teams` WRITE;
+INSERT INTO `teams` VALUES 
+(1,'DevOps'),
+(2,'Validation'),
+(3,'FullStack Dev Team'),
+(4,'Embedded C Devs'),
+(5,'Security Operations'),
+(6,'Data Miners');
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `retrospectives`;
+CREATE TABLE `retrospectives` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `roomName` varchar(255) NOT NULL,
+  `teamId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `teamId` (`teamId`),
+  CONSTRAINT `retrospectives_ibfk_1` FOREIGN KEY (`teamId`) REFERENCES `teams` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+LOCK TABLES `retrospectives` WRITE;
+INSERT INTO `retrospectives` VALUES 
+(1,'2019-11-14 23:00:00','PI19.02.1',1),
+(2,'2019-11-14 23:00:00','PI19.02.2',1),
+(3,'2019-11-14 23:00:00','PI19.02.3',1),
+(4,'2019-11-14 23:00:00','PI19.02.4',1),
+(5,'2019-11-29 23:00:00','PI19.04.1',1),
+(6,'2019-11-30 21:35:30','PI19.04.2',1),
+(7,'2019-11-30 21:37:51','PI19.04.3',1),
+(8,'2019-11-30 21:39:24','PI19.04.4',1),
+(9,'2019-11-30 21:39:30','PI19.06.1',1);
 UNLOCK TABLES;
 
 
@@ -102,148 +147,6 @@ INSERT INTO `messages` VALUES
 UNLOCK TABLES;
 
 
-DROP TABLE IF EXISTS `niconicos`;
-CREATE TABLE `niconicos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `value` enum('1','3','5') NOT NULL,
-  `date` datetime NOT NULL,
-  `userId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `userId` (`userId`),
-  CONSTRAINT `niconicos_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-LOCK TABLES `niconicos` WRITE;
-INSERT INTO `niconicos` VALUES 
-(1,'1','2019-11-29 23:50:43',1),
-(2,'5','2019-11-29 23:50:44',3),
-(3,'3','2019-11-29 23:50:45',5),
-(4,'1','2019-11-29 23:52:35',7),
-(5,'5','2019-11-29 23:52:35',8),
-(6,'3','2019-11-29 23:52:36',9),
-(1,'5','2019-11-30 23:50:43',1),
-(2,'1','2019-11-30 23:50:44',3),
-(3,'5','2019-11-30 23:50:45',5),
-(4,'3','2019-11-30 23:52:35',7),
-(5,'3','2019-11-30 23:52:35',8),
-(6,'1','2019-11-30 23:52:36',9),
-UNLOCK TABLES;
-
-1,3,5,7,8,9
-
-DROP TABLE IF EXISTS `retrospectives`;
-CREATE TABLE `retrospectives` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL,
-  `roomName` varchar(255) NOT NULL,
-  `teamId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `teamId` (`teamId`),
-  CONSTRAINT `retrospectives_ibfk_1` FOREIGN KEY (`teamId`) REFERENCES `teams` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-LOCK TABLES `retrospectives` WRITE;
-INSERT INTO `retrospectives` VALUES 
-(1,'2019-11-14 23:00:00','PI19.02.1',1),
-(2,'2019-11-14 23:00:00','PI19.02.2',1),
-(3,'2019-11-14 23:00:00','PI19.02.3',1),
-(4,'2019-11-14 23:00:00','PI19.02.4',1),
-(5,'2019-11-29 23:00:00','PI19.04.1',1),
-(6,'2019-11-30 21:35:30','PI19.04.2',1),
-(7,'2019-11-30 21:37:51','PI19.04.3',1),
-(8,'2019-11-30 21:39:24','PI19.04.4',1),
-(9,'2019-11-30 21:39:30','PI19.06.1',1);
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `teamcompetency`;
-CREATE TABLE `teamcompetency` (
-  `teamId` int(11) NOT NULL,
-  `competencyId` int(11) NOT NULL,
-  PRIMARY KEY (`teamId`,`competencyId`),
-  KEY `competencyId` (`competencyId`),
-  CONSTRAINT `teamcompetency_ibfk_1` FOREIGN KEY (`teamId`) REFERENCES `teams` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `teamcompetency_ibfk_2` FOREIGN KEY (`competencyId`) REFERENCES `competencies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-LOCK TABLES `teamcompetency` WRITE;
-INSERT INTO `teamcompetency` VALUES 
-(1,1),
-(1,2),
-(1,3),
-(1,4);
-(1,6);
-(1,7);
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `teams`;
-CREATE TABLE `teams` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-LOCK TABLES `teams` WRITE;
-INSERT INTO `teams` VALUES 
-(1,'DevOps'),
-(2,'Validation'),
-(3,'FullStack Dev Team'),
-(4,'Embedded C Devs');
-(5,'Security Operations'); 
-(6,'Data Miners');
-UNLOCK TABLES;
-
-
-DROP TABLE IF EXISTS `usercompetencies`;
-CREATE TABLE `usercompetencies` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `value` int(11) DEFAULT NULL,
-  `userId` int(11) DEFAULT NULL,
-  `competencyId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `userId` (`userId`),
-  KEY `competencyId` (`competencyId`),
-  CONSTRAINT `usercompetencies_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `usercompetencies_ibfk_2` FOREIGN KEY (`competencyId`) REFERENCES `competencies` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-LOCK TABLES `usercompetencies` WRITE;
-INSERT INTO `usercompetencies` VALUES 
-(1,70,1,1),
-(2,30,1,2),
-(3,80,1,3),
-(4,70,3,2),
-(5,20,3,3),
-(6,20,1,4);
-(7,10,5,1);
-(8,20,5,2);
-(9,30,5,3);
-(10,40,5,4);
-(7,20,7,1);
-(8,10,7,2);
-(9,40,7,3);
-(10,30,7,4);
-(7,10,8,1);
-(8,90,8,2);
-(9,50,8,3);
-(10,60,8,4);
-(7,90,9,1);
-(8,40,9,2);
-(9,80,9,3);
-(10,10,9,4)
-(10,50,9,6);
-(10,10,9,7);
-(10,30,1,6);
-(10,40,1,7);
-(10,10,5,6);
-(10,10,5,7);
-UNLOCK TABLES;
-
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -268,7 +171,84 @@ INSERT INTO `users` VALUES
 (6,'Devyn Powlowski','https://s3.amazonaws.com/uifaces/faces/twitter/uxalex/128.jpg','Joesph.Murray@hotmail.com','Developer',3),
 (7,'Presley Ondricka','https://s3.amazonaws.com/uifaces/faces/twitter/arashmanteghi/128.jpg','Carmel47@yahoo.com','Developer',1),
 (8,'Noelia Fadel','https://s3.amazonaws.com/uifaces/faces/twitter/michzen/128.jpg','Efrain.Fisher@yahoo.com','Developer',1),
-(9,'Flavie Conn','https://s3.amazonaws.com/uifaces/faces/twitter/jacobbennett/128.jpg','Mara70@hotmail.com','Developer',1),
+(9,'Flavie Conn','https://s3.amazonaws.com/uifaces/faces/twitter/jacobbennett/128.jpg','Mara70@hotmail.com','Developer',1);
 UNLOCK TABLES;
 
--- 1,3,5,7,8,9
+
+DROP TABLE IF EXISTS `niconicos`;
+CREATE TABLE `niconicos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `value` enum('1','3','5') NOT NULL,
+  `date` datetime NOT NULL,
+  `userId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `niconicos_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+LOCK TABLES `niconicos` WRITE;
+INSERT INTO `niconicos` VALUES 
+(1,'1','2019-11-29 23:50:43',1),
+(2,'5','2019-11-29 23:50:44',3),
+(3,'3','2019-11-29 23:50:45',5),
+(4,'1','2019-11-29 23:52:35',7),
+(5,'5','2019-11-29 23:52:35',8),
+(6,'3','2019-11-29 23:52:36',9),
+(7,'5','2019-11-30 23:50:43',1),
+(8,'1','2019-11-30 23:50:44',3),
+(9,'5','2019-11-30 23:50:45',5),
+(10,'3','2019-11-30 23:52:35',7),
+(11,'3','2019-11-30 23:52:35',8),
+(12,'1','2019-11-30 23:52:36',9);
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `teamcompetency`;
+CREATE TABLE `teamcompetency` (
+  `teamId` int(11) NOT NULL,
+  `competencyId` int(11) NOT NULL,
+  PRIMARY KEY (`teamId`,`competencyId`),
+  KEY `competencyId` (`competencyId`),
+  CONSTRAINT `teamcompetency_ibfk_1` FOREIGN KEY (`teamId`) REFERENCES `teams` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `teamcompetency_ibfk_2` FOREIGN KEY (`competencyId`) REFERENCES `competencies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+LOCK TABLES `teamcompetency` WRITE;
+INSERT INTO `teamcompetency` VALUES 
+(1,1),
+(1,2),
+(1,3),
+(1,4),
+(1,6),
+(1,7);
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `usercompetencies`;
+CREATE TABLE `usercompetencies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `value` int(11) DEFAULT NULL,
+  `userId` int(11) DEFAULT NULL,
+  `competencyId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  KEY `competencyId` (`competencyId`),
+  CONSTRAINT `usercompetencies_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `usercompetencies_ibfk_2` FOREIGN KEY (`competencyId`) REFERENCES `competencies` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+LOCK TABLES `usercompetencies` WRITE;
+INSERT INTO `usercompetencies` VALUES 
+(1,70,1,1),
+(2,30,1,2),
+(3,80,1,3),
+(4,70,3,2),
+(5,20,3,3),
+(6,20,1,4),
+(7,10,5,1),
+(8,20,5,2),
+(9,30,5,3),
+(10,40,5,4);
+UNLOCK TABLES;
